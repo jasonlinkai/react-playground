@@ -1,16 +1,20 @@
 import "./App.css";
+import Home from "./pages/Home/Home";
 import CompareReduxAndContext from "./pages/CompareReduxAndContext";
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-const router = createBrowserRouter([
+export const routes = [
+  {
+    path: "/",
+    element: <Home />,
+  },
   {
     path: "/compare-redux-and-context",
     element: <CompareReduxAndContext />,
   },
-]);
+];
+
+const router = createBrowserRouter(routes);
 
 function App() {
   console.log("App rerendered!");
