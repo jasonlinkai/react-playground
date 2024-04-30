@@ -1,4 +1,4 @@
-### Summarization
+### 總結redux以及context的比較
 
 - 只要是引用了某個context，且被包裹在context provider下，當content更新時, component都會rerender，無論是否使用了context中的值。
 
