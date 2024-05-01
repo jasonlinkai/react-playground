@@ -14,22 +14,24 @@ const cacheTimeouts: CacheTimeouts = {};
 // 使用index進行索引，並將computeFunc的結果保存，同時設定清除緩存的timeout
 export const withCache = <T>(
   index: CacheKey,
-  computeFunc: () => T | Promise<T> ,
-  cacheMiliseconds: number = CACHE_TIMEOUT_MILISECONDS,
-): T | Promise<T> => {
+  computeFunc: () => T | Promise<T>,
+  cacheMiliseconds: number = CACHE_TIMEOUT_MILISECONDS
+): () => T | Promise<T> => {
   if (cache.hasOwnProperty(index)) {
-    console.log('is match cache');
-    return cache[index] as T;
+    console.log("is match cache");
+    return () => cache[index] as T;
   } else {
-    console.log('isn\'t match cache');
-    return Promise.resolve(computeFunc()).then((value) => {
-      console.log('value', value);
-      cache[index] = value;
-      cacheTimeouts[index] = setTimeout(() => {
-        delete cache[index];
-        console.log('clear cache at index: ', index);
-      }, cacheMiliseconds);
-      return value;
-    });
+    console.log("isn't match cache");
+    return () => Promise.resolve(computeFunc()).then(
+      (value) => {
+        console.log("resolved value: ", value);
+        cache[index] = value;
+        cacheTimeouts[index] = setTimeout(() => {
+          delete cache[index];
+          console.log("clear cache at index: ", index);
+        }, cacheMiliseconds);
+        return value;
+      },
+    );
   }
 };

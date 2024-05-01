@@ -2,27 +2,33 @@ import { Suspense, useState } from "react";
 import Loading from "../../components/Loading";
 import { withSuspendPromise } from "../../utils/withSuspendPromise";
 import { withCache } from "../../utils/withCache";
-import { promiseService } from "../../utils/promiseService";
+import { fakeApiService } from "../../utils/fakeApiService";
 
 type ServiceType = string | undefined;
+
+const anyFunc = () => fakeApiService.get<ServiceType>("/api/test-suspend");
+
+
 const AsyncComponent: React.FC = () => {
   console.log("AsyncComponent rendered!");
   const index = "test";
 
-  // 想要執行的方法, 這邊我們用一個異步行為
-  const computedFunc = () => promiseService.get<ServiceType>("test");
-
-  // 將結果cache在某個索引上, 並自動註冊清除的秒數
-  const willCachePromiseOrCachedValue = withCache<ServiceType>(
+  // 建立一個cache版本的方法, 自動將執行結果cache在某個索引上, 並自動註冊清除的秒數
+  const cachedAnyFunc = withCache<ServiceType>(
     index,
-    computedFunc,
+    anyFunc,
     6000
   );
 
-  // 這邊會將拿到的值進行判斷，如果是拿到cache我們可以直接使用, 如果不是cache我們需要hack這個promise, 用來捕獲狀態讓react suspense感知
-  const value = withSuspendPromise<ServiceType>(
-    willCachePromiseOrCachedValue
-  ).read();
+  const funcResult = cachedAnyFunc();
+
+  // 假如沒有命中cache會拿到promise
+  const isPromise = funcResult instanceof Promise;
+
+  // 如果是拿到cache我們可以直接使用, 如果不是cache我們需要hack這個promise, 用來捕獲狀態讓react suspense感知
+  const value = isPromise ? withSuspendPromise<ServiceType>(
+    funcResult
+  ).read() : funcResult;
 
   return <div>{value || "default"}</div>;
 };

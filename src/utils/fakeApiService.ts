@@ -7,22 +7,18 @@ interface Data {
 }
 
 const data: Data = {
-  test: "test",
+  "/api/test-suspend": "test-suspend",
 };
 
 const get = <T>(index: DataIndex): Promise<T | undefined> => {
-  console.log('get index:', index);
+  console.log("get index:", index);
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (data[index]) {
-        resolve(data[index] as T);
-      } else {
-        resolve(undefined);
-      }
+      resolve(data[index] as T);
     }, GET_TIMEOUT_MILISECONDS);
   });
 };
 
-export const promiseService = {
+export const fakeApiService = {
   get,
 };
