@@ -1,7 +1,8 @@
 import "./App.css";
-import Home from "./pages/Home/Home";
-import CompareReduxAndContext from "./pages/CompareReduxAndContext";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import CompareReduxAndContext from "./pages/CompareReduxAndContext";
+import DemonstrateSuspense from "./pages/DemonstrateSuspense";
 
 export const routes = [
   {
@@ -11,6 +12,10 @@ export const routes = [
   {
     path: "/compare-redux-and-context",
     element: <CompareReduxAndContext />,
+  },
+  {
+    path: "/demonstrate-suspense",
+    element: <DemonstrateSuspense />,
   },
 ];
 

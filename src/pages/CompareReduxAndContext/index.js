@@ -1,7 +1,7 @@
-import { Button } from "../components/Button";
-import { Input } from "../components/Input";
-import { Counter } from "../components/Counter";
-import { EmployeeList } from "../components/EmployeeList";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { Counter } from "../../components/Counter";
+import { EmployeeList } from "../../components/EmployeeList";
 
 function CompareReduxAndContext() {
   console.log('CompareReduxAndContext rerendered!')
