@@ -13,3 +13,11 @@
 - react component如果接到throw出來的promise, 則會等待promise被settled, settled後會通知組件重新刷新。
 
 - 我們必須在promise被settled時也把值保存至cache中, 確保重刷後能直接獲取cache值, 而不是又throw promise狀態導致進入fallback狀態。
+
+### error boundary的總結 - demonstrate-error-boundary
+
+- 只能捕獲component生命週期中的錯誤。
+
+- 捕獲不了被異步行為，儘管在生命週期中。
+
+- 捕獲不了onClick這種事件handler中觸發的錯誤。
