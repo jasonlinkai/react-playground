@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 function FallbackComponent({ error }: { error: Error }) {
@@ -53,6 +53,25 @@ const TriggerErrorInEventHanlder = withErrorBoundary(({ children }) => {
   );
 });
 
+const TriggerErrorInTransition = withErrorBoundary(({ children }) => {
+  const [, startTransition] = useTransition();
+
+  return (
+    <div>
+      {children}
+      <button
+        onClick={() => {
+          startTransition(() => {
+            throw new Error("error in TriggerErrorInTransition");
+          });
+        }}
+      >
+        click me!
+      </button>
+    </div>
+  );
+});
+
 const ErrorComponents = [
   { key: "TriggerErrorInUseEffect", Component: TriggerErrorInUseEffect },
   {
@@ -63,6 +82,10 @@ const ErrorComponents = [
     key: "TriggerErrorInEventHanlder",
     Component: TriggerErrorInEventHanlder,
   },
+  {
+    key: "TriggerErrorInTransition",
+    Component: TriggerErrorInTransition,
+  },
 ];
 
 const DemonstrateErrorBoundary = () => {
@@ -70,11 +93,19 @@ const DemonstrateErrorBoundary = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
       {ErrorComponents.map(({ key }) => {
-        return <button key={`button-${key}`} onClick={() => setName(key)}>{key}</button>;
+        return (
+          <button key={`button-${key}`} onClick={() => setName(key)}>
+            {key}
+          </button>
+        );
       })}
       {ErrorComponents.map(({ key, Component }) => {
         if (key !== name) return null;
-        return <Component key={key}>{key}</Component>;
+        return (
+          <Component key={key}>
+            <div>{key}</div>
+          </Component>
+        );
       })}
     </div>
   );
