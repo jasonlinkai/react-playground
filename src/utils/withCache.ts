@@ -16,14 +16,14 @@ export const withCache = <T>(
   index: CacheKey,
   computeFunc: () => T | Promise<T>,
   cacheMiliseconds: number = CACHE_TIMEOUT_MILISECONDS
-): () => T | Promise<T> => {
-  if (cache.hasOwnProperty(index)) {
-    console.log("is match cache");
-    return () => cache[index] as T;
-  } else {
-    console.log("isn't match cache");
-    return () => Promise.resolve(computeFunc()).then(
-      (value) => {
+): (() => T | Promise<T>) => {
+  return () => {
+    if (cache.hasOwnProperty(index)) {
+      console.log("is match cache");
+      return cache[index] as T;
+    } else {
+      console.log("isn't match cache");
+      return Promise.resolve(computeFunc()).then((value) => {
         console.log("resolved value: ", value);
         cache[index] = value;
         cacheTimeouts[index] = setTimeout(() => {
@@ -31,7 +31,7 @@ export const withCache = <T>(
           console.log("clear cache at index: ", index);
         }, cacheMiliseconds);
         return value;
-      },
-    );
-  }
+      });
+    }
+  };
 };
