@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState, useTransition } from "react";
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 function FallbackComponent({ error }: { error: Error }) {
@@ -40,6 +46,18 @@ const TriggerErrorInUseEffectWrapInPromise = withErrorBoundary(
   }
 );
 
+const TriggerErrorInUseEffectWrapInSetTimeout = withErrorBoundary(
+  ({ children }) => {
+    useEffect(() => {
+      setTimeout(() => {
+        throw new Error("error in TriggerErrorInUseEffectWrapInSetTimeout");
+      }, 0);
+    }, []);
+
+    return <div>{children}</div>;
+  }
+);
+
 const TriggerErrorInEventHanlder = withErrorBoundary(({ children }) => {
   const trigger = useCallback(() => {
     throw new Error("error in TriggerErrorInEventHanlder");
@@ -72,11 +90,19 @@ const TriggerErrorInTransition = withErrorBoundary(({ children }) => {
   );
 });
 
+const TriggerErrorInComponent = withErrorBoundary(({ children }) => {
+  throw new Error("error in TriggerErrorInTransition");
+});
+
 const ErrorComponents = [
   { key: "TriggerErrorInUseEffect", Component: TriggerErrorInUseEffect },
   {
     key: "TriggerErrorInUseEffectWrapInPromise",
     Component: TriggerErrorInUseEffectWrapInPromise,
+  },
+  {
+    key: "TriggerErrorInUseEffectWrapInSetTimeout",
+    Component: TriggerErrorInUseEffectWrapInSetTimeout,
   },
   {
     key: "TriggerErrorInEventHanlder",
@@ -85,6 +111,10 @@ const ErrorComponents = [
   {
     key: "TriggerErrorInTransition",
     Component: TriggerErrorInTransition,
+  },
+  {
+    key: "TriggerErrorInComponent",
+    Component: TriggerErrorInComponent,
   },
 ];
 

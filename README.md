@@ -16,10 +16,10 @@
 
 ### error boundary的總結 - demonstrate-error-boundary
 
-- 只能捕獲component生命週期中的錯誤。
+- 只能捕獲component render phrase中的錯誤。
 
-- 捕獲不了被異步行為，儘管在生命週期中。
+- 捕獲不了異步行為，由promise、async function、setTimeout等異步行為所拋出的錯誤皆不可捕獲。
 
-- 捕獲不了onClick這種事件handler中觸發的錯誤。
+- 捕獲不了onClick這種事件handler中觸發的錯誤。(這個也是異步的macro)
 
 - @canary 如果我們在startTransition中拋出錯誤是可以被捕獲的！這個功能非常好用。
