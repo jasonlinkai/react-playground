@@ -1,5 +1,4 @@
 import {
-  Component,
   useCallback,
   useEffect,
   useState,
