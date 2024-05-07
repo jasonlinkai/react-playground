@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import CompareReduxAndContext from "./pages/CompareReduxAndContext";
 import DemonstrateSuspense from "./pages/DemonstrateSuspense";
+import DemonstrateRef from "./pages/DemonstrateRef";
 import DemonstrateErrorBoundary from "./pages/DemonstrateErrorBoundary";
 import { useEffect } from "react";
 
@@ -18,6 +19,10 @@ export const routes = [
   {
     path: "/demonstrate-suspense",
     element: <DemonstrateSuspense />,
+  },
+  {
+    path: "/demonstrate-ref",
+    element: <DemonstrateRef />,
   },
   {
     path: "/demonstrate-error-boundary",
