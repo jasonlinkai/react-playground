@@ -23,3 +23,7 @@
 - 捕獲不了onClick這種事件handler中觸發的錯誤。(這個也是異步的macro)
 
 - @canary 如果我們在startTransition中拋出錯誤是可以被捕獲的！這個功能非常好用。
+
+### ref的總結 - demonstrate-ref
+
+- 基於TS及ref, 提供二次封裝實作的best pratice.
