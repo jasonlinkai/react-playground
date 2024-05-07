@@ -4,7 +4,6 @@ import { useRef, forwardRef, useState, useImperativeHandle } from "react";
 interface InputRef {
   focus: () => void;
 }
-
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   testId: string; 
 }
