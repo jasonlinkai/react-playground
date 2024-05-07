@@ -1,0 +1,35 @@
+.side-drawer {
+  width: 0px;
+  background-color: #030303;
+}
+
+.side-drawer.open {
+  width: 400px;
+}
+
+.toggle-button {
+  background-color: transparent;
+  color: white;
+}
+
+.drawer-navigation ul {
+}
+
+.drawer-navigation li {
+  color: white;
+}
+
+.drawer-navigation li:hover {
+  background-color: #555;
+}
+
+.open-drawer-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

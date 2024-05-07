@@ -1,11 +1,12 @@
 import "./App.css";
+import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import CompareReduxAndContext from "./pages/CompareReduxAndContext";
 import DemonstrateSuspense from "./pages/DemonstrateSuspense";
 import DemonstrateRef from "./pages/DemonstrateRef";
 import DemonstrateErrorBoundary from "./pages/DemonstrateErrorBoundary";
-import { useEffect } from "react";
+import WebEditor from "./pages/WebEdtior";
 
 export const routes = [
   {
@@ -27,6 +28,10 @@ export const routes = [
   {
     path: "/demonstrate-error-boundary",
     element: <DemonstrateErrorBoundary />,
+  },
+  {
+    path: "/web-editor",
+    element: <WebEditor />,
   },
 ];
 
