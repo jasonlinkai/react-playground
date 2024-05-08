@@ -2,11 +2,19 @@
   color: white;
   padding: 15px;
 }
-.style-editor > .style-editor-row {
+.style-editor > .style-editor-form-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 15px;
 }
-.style-editor > .style-editor-row > input{
+.style-editor > .style-editor-form-item > .style-editor-form-item__label {
+}
+.style-editor > .style-editor-form-item > .style-editor-form-item__select {
+  width: 10rem;
+  height: 1.5rem;
+}
+.style-editor > .style-editor-form-item > .style-editor-form-item__input {
+  width: 10rem;
+  height: 1.5rem;
 }

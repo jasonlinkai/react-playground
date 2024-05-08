@@ -8,19 +8,17 @@ enum StyleEnum {
   color = "color",
   backgroundColor = "backgroundColor",
   position = "position",
+  top = "top",
+  right = "right",
+  bottom = "bottom",
+  left = "left",
 }
 
-const styleKeys: StyleEnum[] = [
-  StyleEnum.width,
-  StyleEnum.height,
-  StyleEnum.color,
-  StyleEnum.backgroundColor,
-  StyleEnum.position,
-];
+const styleKeys: StyleEnum[] = [...Object.values(StyleEnum)];
 
 const NormalText = ({ label, value }: { label: string; value: string }) => {
   return (
-    <div className="style-editor-row">
+    <div className="style-editor-form-item">
       {label}:<span>{value}</span>
     </div>
   );
@@ -39,9 +37,9 @@ const NormalSelect = ({
   options?: { label: string; value: string }[];
 }) => {
   return (
-    <div className="style-editor-row">
-      {label}:
-      <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <div className="style-editor-form-item">
+      <label className="style-editor-form-item__label">{label}</label>
+      <select className="style-editor-form-item__select" value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((option) => {
           return (
             <option key={option.value} value={option.value}>
@@ -64,9 +62,9 @@ const NormalInput = ({
   onChange: (v: string) => void;
 }) => {
   return (
-    <div className="style-editor-row">
-      {label}:
-      <input value={value} onChange={(e) => onChange(e.target.value)} />
+    <div className="style-editor-form-item">
+      <label className="style-editor-form-item__label">{label}</label>
+      <input className="style-editor-form-item__input" value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 };
@@ -104,6 +102,26 @@ const renderConfigs = {
       ],
     },
     Component: NormalSelect,
+  },
+  [StyleEnum.top]: {
+    styleKey: StyleEnum.top,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.right]: {
+    styleKey: StyleEnum.right,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.bottom]: {
+    styleKey: StyleEnum.bottom,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.left]: {
+    styleKey: StyleEnum.left,
+    props: {},
+    Component: NormalInput,
   },
 };
 
