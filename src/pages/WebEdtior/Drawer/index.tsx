@@ -1,6 +1,6 @@
 import "./drawer.css";
 import { useState } from "react";
-import { AstElement } from "../RenderReactAst";
+import type { AstElement } from "../RenderReactAst/ast";
 
 interface DrawerProps {
   selectedAstElement: AstElement | null;
@@ -20,7 +20,8 @@ const Drawer: React.FC<DrawerProps> = ({
         selectedAstElement !== null && (
           <nav className="drawer-navigation">
             <ul>
-              <li>key: {selectedAstElement.id}</li>
+              <li>uuid: {selectedAstElement.uuid}</li>
+              <li>parentUuid: {selectedAstElement.parentUuid}</li>
               <li>className: {selectedAstElement.props.className}</li>
               <li>style: {JSON.stringify(selectedAstElement.props.style)}</li>
             </ul>

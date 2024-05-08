@@ -1,64 +1,59 @@
-import "./renderer.css"
+import "./renderer.css";
 import React from "react";
+import { dispatchEvent } from "../event";
+import { AstNode, AstElement } from "./ast";
 
-interface EditorProps {
-  id: string;
-}
-// Define types for AST nodes
-export interface AstElement extends EditorProps {
-  type: string;
-  props: { [key: string]: any };
-  children: AstNode[];
-}
-export type AstText = string;
-export type AstNode = AstElement | AstText;
-
+//
 // Define a function to recursively render AST nodes
-interface RenderAstProps extends RenderReactASTProps {}
-const renderAst = ({
+//
+interface RecursivlyRenderAstNodeProps {
+  ast: AstNode;
+  setSelectedAstElement: (selected: AstElement | null) => void;
+}
+const recursivlyRenderAstNode = ({
   ast,
   setSelectedAstElement,
-}: RenderAstProps): JSX.Element | string => {
-  const node = ast;
+}: RecursivlyRenderAstNodeProps): JSX.Element | string => {
+  const isTextElement = "innerType" in ast;
   // Base case: If the node is a text node, render it as is
-  if (typeof node === "string") {
-    return node;
+  if (isTextElement) {
+    return ast.content;
   }
 
+  const node: AstElement = ast;
   // Otherwise, it's an element node
-  const { type, props, children } = node;
+  const { type, props, children, events } = node;
 
   // Define event listeners if they exist in props
+  // FIXME: type is not correct.
   const eventListeners: { [key: string]: (...args: any[]) => void } = {
     onClick: (e: React.MouseEvent) => {
       e.stopPropagation();
-      console.log(node);
       setSelectedAstElement(node);
+      events["onClick"] && dispatchEvent(events["onClick"]);
     }, // Example click event listener
   };
-  for (const prop in props) {
-    if (prop.startsWith("on")) {
-      const eventName = prop.toLowerCase().substring(2);
-      eventListeners[eventName] = props[prop];
-    }
-  }
 
   // Render the element with event listeners
+  const renderChildren = Array.isArray(children)
+    ? children.map((child) =>
+        recursivlyRenderAstNode({
+          ast: child,
+          setSelectedAstElement,
+        })
+      )
+    : children;
+
   return React.createElement(
     type,
     { ...props, ...eventListeners },
-    children.map((child) =>
-      renderAst({
-        ast: child,
-        setSelectedAstElement,
-      })
-    )
+    renderChildren
   );
 };
 
 
 interface RenderReactASTProps {
-  ast: AstNode;
+  ast: AstElement;
   setSelectedAstElement: (selected: AstElement | null) => void;
 }
 const RenderReactAST: React.FC<RenderReactASTProps> = ({
@@ -67,7 +62,7 @@ const RenderReactAST: React.FC<RenderReactASTProps> = ({
 }) => {
   return (
     <div id="ast-renderer">
-      {renderAst({
+      {recursivlyRenderAstNode({
         ast,
         setSelectedAstElement,
       })}
