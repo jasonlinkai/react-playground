@@ -6,7 +6,7 @@ import CompareReduxAndContext from "./pages/CompareReduxAndContext";
 import DemonstrateSuspense from "./pages/DemonstrateSuspense";
 import DemonstrateRef from "./pages/DemonstrateRef";
 import DemonstrateErrorBoundary from "./pages/DemonstrateErrorBoundary";
-import WebEditor from "./pages/WebEdtior";
+import WebEditor from "./pages/WebEditor";
 
 export const routes = [
   {

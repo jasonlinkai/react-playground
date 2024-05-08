@@ -18,4 +18,5 @@ export interface AstTextElement extends AstElementSharedProps {
   innerType: string;
   content: string;
 }
+
 export type AstNode = AstElement | AstTextElement;

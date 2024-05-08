@@ -2,13 +2,14 @@ import "./renderer.css";
 import React from "react";
 import { dispatchEvent } from "../event";
 import { AstNode, AstElement } from "./ast";
+import { useAst } from "../AstProvider";
 
 //
 // Define a function to recursively render AST nodes
 //
 interface RecursivlyRenderAstNodeProps {
   ast: AstNode;
-  setSelectedAstElement: (selected: AstElement | null) => void;
+  setSelectedAstElement: (selected: AstElement) => void;
 }
 const recursivlyRenderAstNode = ({
   ast,
@@ -51,15 +52,13 @@ const recursivlyRenderAstNode = ({
   );
 };
 
-
-interface RenderReactASTProps {
-  ast: AstElement;
-  setSelectedAstElement: (selected: AstElement | null) => void;
-}
-const RenderReactAST: React.FC<RenderReactASTProps> = ({
-  ast,
-  setSelectedAstElement,
-}) => {
+const RenderReactAST: React.FC = () => {
+  const {ast, setSelectedAstElement} = useAst();
+  if (ast.children[0]) {
+    if (!("innerType" in ast.children[0])) {
+      console.log(ast.children[0].props.style);
+    }
+  }
   return (
     <div id="ast-renderer">
       {recursivlyRenderAstNode({

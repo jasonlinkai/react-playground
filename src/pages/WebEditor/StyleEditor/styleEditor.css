@@ -1,0 +1,12 @@
+.style-editor {
+  color: white;
+  padding: 15px;
+}
+.style-editor > .style-editor-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.style-editor > .style-editor-row > input{
+}
