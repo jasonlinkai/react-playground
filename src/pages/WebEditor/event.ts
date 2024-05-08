@@ -39,7 +39,9 @@ export const registerEvent = <T extends EventNames>({
   callback,
 }: RegisterEventProps<T>) => {
   const enhencedCallback = (payload: EventPayloadMap[T]) => {
-    console.log(`received eventName: ${type}`);
+    console.log(
+      `received eventName: ${type}, payload: ${JSON.stringify(payload)}`
+    );
     callback(payload);
   };
   handlers[type] = enhencedCallback;
@@ -47,14 +49,10 @@ export const registerEvent = <T extends EventNames>({
 
 registerEvent<EventNames.LOGIN>({
   type: EventNames.LOGIN,
-  callback: (payload) => {
-    console.log(payload);
-  },
+  callback: (payload) => {},
 });
 
 registerEvent<EventNames.NAVIGATE>({
   type: EventNames.NAVIGATE,
-  callback: (payload) => {
-    console.log(payload);
-  },
+  callback: (payload) => {},
 });

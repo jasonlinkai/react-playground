@@ -1,4 +1,5 @@
 import "./renderer.css";
+import clsx from "clsx";
 import React from "react";
 import { dispatchEvent } from "../event";
 import { AstNode, AstElement } from "./ast";
@@ -9,10 +10,14 @@ import { useAst } from "../AstProvider";
 //
 interface RecursivlyRenderAstNodeProps {
   ast: AstNode;
+  selectedAstElement: AstElement | null;
+  editingSelectedAstElement: AstElement | null;
   setSelectedAstElement: (selected: AstElement) => void;
 }
 const recursivlyRenderAstNode = ({
   ast,
+  selectedAstElement,
+  editingSelectedAstElement,
   setSelectedAstElement,
 }: RecursivlyRenderAstNodeProps): JSX.Element | string => {
   const isTextElement = "innerType" in ast;
@@ -23,7 +28,7 @@ const recursivlyRenderAstNode = ({
 
   const node: AstElement = ast;
   // Otherwise, it's an element node
-  const { type, props, children, events } = node;
+  const { uuid, type, props, children, events } = node;
 
   // Define event listeners if they exist in props
   // FIXME: type is not correct.
@@ -40,29 +45,46 @@ const recursivlyRenderAstNode = ({
     ? children.map((child) =>
         recursivlyRenderAstNode({
           ast: child,
+          selectedAstElement,
+          editingSelectedAstElement,
           setSelectedAstElement,
         })
       )
     : children;
 
+  const isSelectedElement =
+    selectedAstElement && selectedAstElement.uuid === uuid;
+
   return React.createElement(
     type,
-    { ...props, ...eventListeners },
+    {
+      ...props,
+      ...eventListeners,
+      style: {
+        ...props.style,
+        ...(isSelectedElement ? editingSelectedAstElement?.props.style : {}),
+      },
+      className: clsx([
+        props.className,
+        {
+          "selected-element": isSelectedElement,
+        },
+      ]),
+    },
     renderChildren
   );
 };
 
 const RenderReactAST: React.FC = () => {
-  const {ast, setSelectedAstElement} = useAst();
-  if (ast.children[0]) {
-    if (!("innerType" in ast.children[0])) {
-      console.log(ast.children[0].props.style);
-    }
-  }
+  const { ast, selectedAstElement, editingSelectedAstElement, setSelectedAstElement } = useAst();
+  console.log('selectedAstElement.uuid', selectedAstElement?.uuid, selectedAstElement?.props.style)
+  console.log('editingSelectedAstElement.uuid', editingSelectedAstElement?.uuid, editingSelectedAstElement?.props.style)
   return (
     <div id="ast-renderer">
       {recursivlyRenderAstNode({
         ast,
+        selectedAstElement,
+        editingSelectedAstElement,
         setSelectedAstElement,
       })}
     </div>

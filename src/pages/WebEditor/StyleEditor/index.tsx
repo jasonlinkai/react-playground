@@ -1,5 +1,5 @@
 import "./styleEditor.css";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useAst } from "../AstProvider";
 
 enum StyleEnum {
@@ -7,6 +7,7 @@ enum StyleEnum {
   height = "height",
   color = "color",
   backgroundColor = "backgroundColor",
+  position = "position",
 }
 
 const styleKeys: StyleEnum[] = [
@@ -14,12 +15,41 @@ const styleKeys: StyleEnum[] = [
   StyleEnum.height,
   StyleEnum.color,
   StyleEnum.backgroundColor,
+  StyleEnum.position,
 ];
 
 const NormalText = ({ label, value }: { label: string; value: string }) => {
   return (
     <div className="style-editor-row">
       {label}:<span>{value}</span>
+    </div>
+  );
+};
+
+const NormalSelect = ({
+  label,
+  value,
+  onChange,
+
+  options = [],
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options?: { label: string; value: string }[];
+}) => {
+  return (
+    <div className="style-editor-row">
+      {label}:
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((option) => {
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })}
+      </select>
     </div>
   );
 };
@@ -41,43 +71,93 @@ const NormalInput = ({
   );
 };
 
+const renderConfigs = {
+  [StyleEnum.width]: {
+    styleKey: StyleEnum.width,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.height]: {
+    styleKey: StyleEnum.height,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.color]: {
+    styleKey: StyleEnum.color,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.backgroundColor]: {
+    styleKey: StyleEnum.backgroundColor,
+    props: {},
+    Component: NormalInput,
+  },
+  [StyleEnum.position]: {
+    styleKey: StyleEnum.position,
+    props: {
+      options: [
+        { label: "static", value: "static" },
+        { label: "relative", value: "relative" },
+        { label: "absolute", value: "absolute" },
+        { label: "fixed", value: "fixed" },
+        { label: "sticky", value: "sticky" },
+      ],
+    },
+    Component: NormalSelect,
+  },
+};
+
 const StyleEditor = () => {
-  const { selectedAstElement, updateAstElementStyleByUuid } = useAst();
-  const [styleObj, setStyleObj] = useState<React.CSSProperties | null>(null);
+  const {
+    editingSelectedAstElement,
+    setEditingSelectedAstElement,
+    updateAstElementStyleByUuid,
+  } = useAst();
+
   const saveAst = () => {
-    if (selectedAstElement && styleObj) {
+    if (editingSelectedAstElement) {
       updateAstElementStyleByUuid({
-        uuid: selectedAstElement?.uuid,
-        updates: styleObj,
+        uuid: editingSelectedAstElement?.uuid,
+        updates: editingSelectedAstElement.props.style,
       });
     }
   };
-  useEffect(() => {
-    if (selectedAstElement) {
-      setStyleObj(selectedAstElement.props.style);
-    }
-  }, [selectedAstElement]);
 
-  if (!selectedAstElement || !styleObj) {
-    return <div>請先選擇節點</div>;
+  const styleObj = useMemo(() => {
+    return editingSelectedAstElement?.props.style;
+  }, [editingSelectedAstElement]);
+
+  if (!editingSelectedAstElement) {
+    return <div style={{ color: "white" }}>請先選擇節點</div>;
   }
 
   return (
     <div className="style-editor">
-      <NormalText label={"uuid"} value={selectedAstElement.uuid} />
-      <NormalText label={"parentUuid"} value={selectedAstElement.parentUuid} />
-      {styleKeys.map((key) => {
+      <NormalText label={"uuid"} value={editingSelectedAstElement.uuid} />
+      <NormalText
+        label={"parentUuid"}
+        value={editingSelectedAstElement.parentUuid}
+      />
+      {styleKeys.map((styleKey) => {
+        const { Component, props } = renderConfigs[styleKey];
         return (
-          <NormalInput
-            key={key}
-            label={key}
-            value={`${styleObj[key] || ""}`}
+          <Component
+            key={styleKey}
+            label={styleKey}
+            value={`${styleObj[styleKey] || ""}`}
             onChange={(v) => {
-              setStyleObj({
-                ...styleObj,
-                [key]: v,
+              setEditingSelectedAstElement({
+                ...editingSelectedAstElement,
+                props: {
+                  ...editingSelectedAstElement.props,
+                  style: {
+                    ...styleObj,
+                    [styleKey]: v,
+                  },
+                },
               });
             }}
+            {...props}
           />
         );
       })}

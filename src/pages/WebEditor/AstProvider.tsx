@@ -11,7 +11,11 @@ const rootAstNode: AstElement = {
   props: {
     key: "key_1",
     className: "container",
-    style: {},
+    style: {
+      width: "100%",
+      height: "100%",
+      backgroundColor: "yellow",
+    },
   },
   events: {
     onClick: {
@@ -54,6 +58,8 @@ interface AstContextType {
   ast: AstElement;
   selectedAstElement: AstElement | null;
   setSelectedAstElement: (selectedAstElement: AstElement) => void;
+  editingSelectedAstElement: AstElement | null;
+  setEditingSelectedAstElement: (editingSelectedAstElement: AstElement) => void;
   updateAstElementStyleByUuid: ({
     uuid,
     updates,
@@ -70,6 +76,8 @@ const AstContext = createContext<AstContextType>({
   ast: rootAstNode,
   selectedAstElement: null,
   setSelectedAstElement: (selectedAstElement: AstElement) => {},
+  editingSelectedAstElement: null,
+  setEditingSelectedAstElement: (editingSelectedAstElement: AstElement) => {},
   updateAstElementStyleByUuid: ({
     uuid,
     updates,
@@ -96,7 +104,7 @@ const travralTreeAndUpdateStyle = ({
       if (!isTextElement) {
         if (
           travralTreeAndUpdateStyle({
-            node: (child as AstElement),
+            node: child as AstElement,
             uuid,
             updates,
           })
@@ -114,8 +122,16 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [ast, setAst] = useState<AstElement>(rootAstNode);
-  const [selectedAstElement, setSelectedAstElement] =
+  const [selectedAstElement, _setSelectedAstElement] =
     useState<AstElement | null>(null);
+  const [editingSelectedAstElement, setEditingSelectedAstElement] =
+    useState<AstElement | null>(null);
+  const setSelectedAstElement = useCallback((selected: AstElement | null) => {
+    if (selected && selected.uuid !== selectedAstElement?.uuid) {
+      _setSelectedAstElement({ ...selected });
+      setEditingSelectedAstElement({ ...selected });
+    }
+  }, [selectedAstElement]);
   const updateAstElementStyleByUuid = useCallback(
     ({ uuid, updates }: UpdateAstElementFuncProps) => {
       const newAst: AstElement = JSON.parse(JSON.stringify(ast));
@@ -130,6 +146,8 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
         ast,
         selectedAstElement,
         setSelectedAstElement,
+        editingSelectedAstElement,
+        setEditingSelectedAstElement,
         updateAstElementStyleByUuid,
       }}
     >
