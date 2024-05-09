@@ -48,6 +48,31 @@ const rootAstNode: AstElement = {
           innerType: "inner-text",
           content: "Click me",
         },
+        {
+          uuid: "4",
+          parentUuid: "2",
+          type: "div",
+          props: {
+            key: "key_4",
+            className: "",
+            style: {},
+          },
+          events: {},
+          children: [
+            {
+              uuid: "5",
+              parentUuid: "4",
+              type: "div",
+              props: {
+                key: "key_5",
+                className: "",
+                style: {},
+              },
+              events: {},
+              children: [],
+            },
+          ],
+        },
       ],
     },
   ],
@@ -126,12 +151,15 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
     useState<AstElement | null>(null);
   const [editingSelectedAstElement, setEditingSelectedAstElement] =
     useState<AstElement | null>(null);
-  const setSelectedAstElement = useCallback((selected: AstElement | null) => {
-    if (selected && selected.uuid !== selectedAstElement?.uuid) {
-      _setSelectedAstElement({ ...selected });
-      setEditingSelectedAstElement({ ...selected });
-    }
-  }, [selectedAstElement]);
+  const setSelectedAstElement = useCallback(
+    (selected: AstElement | null) => {
+      if (selected && selected.uuid !== selectedAstElement?.uuid) {
+        _setSelectedAstElement({ ...selected });
+        setEditingSelectedAstElement({ ...selected });
+      }
+    },
+    [selectedAstElement]
+  );
   const updateAstElementStyleByUuid = useCallback(
     ({ uuid, updates }: UpdateAstElementFuncProps) => {
       const newAst: AstElement = JSON.parse(JSON.stringify(ast));

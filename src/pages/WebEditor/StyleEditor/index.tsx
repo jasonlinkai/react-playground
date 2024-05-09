@@ -1,6 +1,7 @@
 import "./styleEditor.css";
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import { useAst } from "../AstProvider";
+import { AstElement } from "../RenderReactAst/ast";
 
 enum StyleEnum {
   width = "width",
@@ -39,7 +40,11 @@ const NormalSelect = ({
   return (
     <div className="style-editor-form-item">
       <label className="style-editor-form-item__label">{label}</label>
-      <select className="style-editor-form-item__select" value={value} onChange={(e) => onChange(e.target.value)}>
+      <select
+        className="style-editor-form-item__select"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
         {options.map((option) => {
           return (
             <option key={option.value} value={option.value}>
@@ -64,7 +69,11 @@ const NormalInput = ({
   return (
     <div className="style-editor-form-item">
       <label className="style-editor-form-item__label">{label}</label>
-      <input className="style-editor-form-item__input" value={value} onChange={(e) => onChange(e.target.value)} />
+      <input
+        className="style-editor-form-item__input"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </div>
   );
 };
@@ -125,6 +134,41 @@ const renderConfigs = {
   },
 };
 
+const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
+  return (
+    <Fragment>
+      {root.children.map((child) => {
+        const isTextElement = "innerType" in child;
+        const marginLeft = `${10 * level}px`;
+        return (
+          <div className="ast-tree-panel-item" style={{ marginLeft }}>
+            {isTextElement ? (
+              <span className="ast-tree-panel-item__content">
+                {child.content}
+              </span>
+            ) : (
+              <>
+                <span className="ast-tree-panel-item__start-tag">{`<${child.type}>`}</span>
+                <AstTree root={child} level={level + 1} />
+                <span className="ast-tree-panel-item__end-tag">{`</${child.type}>`}</span>
+              </>
+            )}
+          </div>
+        );
+      })}
+    </Fragment>
+  );
+};
+
+const AstTreePanel = ({ root }: { root: AstElement }) => {
+  return (
+    <div className="ast-tree-panel">
+      <div className="ast-tree-panel__title">AstTreePanel</div>
+      <AstTree root={root} />
+    </div>
+  );
+};
+
 const StyleEditor = () => {
   const {
     editingSelectedAstElement,
@@ -179,6 +223,7 @@ const StyleEditor = () => {
           />
         );
       })}
+      <AstTreePanel root={editingSelectedAstElement} />
       <button onClick={saveAst}>save</button>
     </div>
   );
