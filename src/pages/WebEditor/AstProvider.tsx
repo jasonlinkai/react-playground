@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { EventNames } from "./event";
-import { AstElement } from "./RenderReactAst/ast";
+import { AstElement, AstNode } from "./RenderReactAst/ast";
 import { StyleEnum } from "./StyleEditor";
 
 const rootAstNode: AstElement = {
@@ -147,6 +147,42 @@ const travralTreeAndUpdate = ({
   return false;
 };
 
+// const flattenAstToLevelMatric = ({
+//   tree,
+//   levelMatrix = [],
+//   level = 0,
+// }: {
+//   tree: AstNode;
+//   flattenTree?: Map<string, AstNode>;
+//   levelMatrix?: AstNode[][];
+//   level?: number;
+// }) => {
+//   if (!levelMatrix[level]) levelMatrix[level] = [];
+//   levelMatrix[level].push(tree);
+//   if ("children" in tree) {
+//     tree.children.forEach((child) => {
+//       flattenAstToLevelMatric({ tree: child, levelMatrix, level: level + 1 });
+//     });
+//   }
+//   return levelMatrix;
+// };
+
+// const getAstUuidMapByLevelMatrix = ({
+//   levelMatrix,
+// }: {
+//   levelMatrix: AstNode[][];
+// }) => {
+//   const astUuidMap: Map<string, AstNode> = levelMatrix.reduce((acc, level) => {
+//     level.forEach((node) => {
+//       acc.set(node.uuid, node);
+//     });
+//     return acc;
+//   }, new Map());
+//   return astUuidMap;
+// };
+// const levelMatrix = flattenAstToLevelMatric({ tree: rootAstNode });
+// const astUuidMap = getAstUuidMapByLevelMatrix({ levelMatrix });
+
 // Create a provider component to wrap your app with
 export const AstProvider: React.FC<React.PropsWithChildren> = ({
   children,
@@ -166,22 +202,34 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
     },
     [selectedAstElement]
   );
+
+  const _updateEditionSelectedAstElement = useCallback(
+    ({ node }: { node: AstElement }) => {
+      setEditingSelectedAstElement({
+        ...node,
+      });
+    },
+    []
+  );
+
   const updateEditingSelectedAstElementStyle = useCallback(
     ({ styleKey, styleValue }: { styleKey: StyleEnum; styleValue: string }) => {
       if (editingSelectedAstElement) {
-        setEditingSelectedAstElement({
-          ...editingSelectedAstElement,
-          props: {
-            ...editingSelectedAstElement.props,
-            style: {
-              ...editingSelectedAstElement.props.style,
-              [styleKey]: styleValue,
+        _updateEditionSelectedAstElement({
+          node: {
+            ...editingSelectedAstElement,
+            props: {
+              ...editingSelectedAstElement.props,
+              style: {
+                ...editingSelectedAstElement.props.style,
+                [styleKey]: styleValue,
+              },
             },
           },
         });
       }
     },
-    [editingSelectedAstElement]
+    [editingSelectedAstElement, _updateEditionSelectedAstElement]
   );
 
   // 保存異動後的編輯節點至樹上
