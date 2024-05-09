@@ -18,11 +18,20 @@
     linear-gradient(0deg, red 50%, transparent 0) repeat-y;
   background-size: 4px 2px, 4px 2px, 2px 4px, 2px 4px;
   background-position: 0 0, 0 100%, 0 0, 100% 0;
-  animation: linearGradientMove .3s infinite linear;
+  animation: linearGradientMove 0.3s infinite linear;
 }
 
+#ast-renderer .drag-over-element {
+  background: linear-gradient(90deg, blue 50%, transparent 0) repeat-x,
+    linear-gradient(90deg, blue 50%, transparent 0) repeat-x,
+    linear-gradient(0deg, blue 50%, transparent 0) repeat-y,
+    linear-gradient(0deg, blue 50%, transparent 0) repeat-y;
+  background-size: 4px 4px, 4px 4px, 4px 4px, 4px 4px;
+  background-position: 0 0, 0 100%, 0 0, 100% 0;
+  animation: linearGradientMove 0.3s infinite linear;
+}
 @keyframes linearGradientMove {
   100% {
-      background-position: 4px 0, -4px 100%, 0 -4px, 100% 4px;
+    background-position: 4px 0, -4px 100%, 0 -4px, 100% 4px;
   }
 }

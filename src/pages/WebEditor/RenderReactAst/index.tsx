@@ -14,8 +14,8 @@ interface RecursivlyRenderAstNodeProps {
   setSelectedAstElement: (selected: AstElement) => void;
   handleOnClick: (ev: React.MouseEvent, node: AstElement) => void;
   handleOnDragStart: (ev: React.DragEvent) => void;
-  handleOnDragOver: (ev: React.DragEvent) => void;
-  handleOnDragLeave: (ev: React.DragEvent) => void;
+  handleOnDragOver: (ev: React.DragEvent, node: AstElement) => void;
+  handleOnDragLeave: (ev: React.DragEvent, node: AstElement) => void;
   handleOnDrop: (ev: React.DragEvent, node: AstElement) => void;
   dragOverAstElement: AstElement | null;
   setDragOverAstElement: (dragOvered: AstElement) => void;
@@ -44,6 +44,7 @@ const recursivlyRenderAstNode = ({
   const { uuid, type, props, children } = node;
   const isSelectedElement =
     selectedAstElement && selectedAstElement.uuid === uuid;
+  const isDragOverAstElement = dragOverAstElement && dragOverAstElement.uuid === node.uuid;
 
   // register event for web-editor
   const editorEventListeners: {
@@ -58,10 +59,10 @@ const recursivlyRenderAstNode = ({
     };
   } else {
     editorEventListeners.onDragOver = (e: React.DragEvent) => {
-      handleOnDragOver(e);
+      handleOnDragOver(e, node);
     };
     editorEventListeners.onDragLeave = (e: React.DragEvent) => {
-      handleOnDragLeave(e);
+      handleOnDragLeave(e, node);
     };
     editorEventListeners.onDrop = (e: React.DragEvent) => {
       handleOnDrop(e, node);
@@ -101,6 +102,7 @@ const recursivlyRenderAstNode = ({
         props.className,
         {
           "selected-element": isSelectedElement,
+          "drag-over-element": isDragOverAstElement,
         },
       ]),
     },
@@ -138,19 +140,26 @@ const RenderReactAST: React.FC = () => {
     [selectedAstElement]
   );
 
-  const handleOnDragOver: React.DragEventHandler = useCallback((ev) => {
-    ev.preventDefault();
-    ev.dataTransfer.dropEffect = "move";
-  }, []);
+  const handleOnDragOver: (ev: React.DragEvent, node: AstElement) => void =
+    useCallback((ev, inAstElement) => {
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = "move";
+      setDragOverAstElement(inAstElement);
+      console.log('inAstElement', inAstElement)
+    }, []);
 
-  const handleOnDragLeave: React.DragEventHandler = useCallback((ev) => {
-    ev.preventDefault();
-  }, []);
+  const handleOnDragLeave: (ev: React.DragEvent, node: AstElement) => void =
+    useCallback((ev, leaveAstElement) => {
+      ev.preventDefault();
+      setDragOverAstElement(null);
+      console.log('leaveAstElement', leaveAstElement)
+    }, []);
 
   const handleOnDrop: (ev: React.DragEvent, node: AstElement) => void =
     useCallback((ev, drop) => {
       const data = ev.dataTransfer.getData("application/json");
       const drag = JSON.parse(data);
+      setDragOverAstElement(null);
       console.log(`drag: ${JSON.stringify(drag)}`);
       console.log(`drop: ${JSON.stringify(drop)}`);
     }, []);
