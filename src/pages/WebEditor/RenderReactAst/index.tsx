@@ -1,7 +1,6 @@
 import "./renderer.css";
 import clsx from "clsx";
-import React, { SyntheticEvent } from "react";
-import { dispatchEvent } from "../event";
+import React, { SyntheticEvent, useCallback, useState } from "react";
 import { AstNode, AstElement } from "./ast";
 import { useAst } from "../AstProvider";
 
@@ -13,18 +12,26 @@ interface RecursivlyRenderAstNodeProps {
   selectedAstElement: AstElement | null;
   editingSelectedAstElement: AstElement | null;
   setSelectedAstElement: (selected: AstElement) => void;
+  handleOnClick: (ev: React.MouseEvent, node: AstElement) => void;
   handleOnDragStart: (ev: React.DragEvent) => void;
   handleOnDragOver: (ev: React.DragEvent) => void;
+  handleOnDragLeave: (ev: React.DragEvent) => void;
   handleOnDrop: (ev: React.DragEvent, node: AstElement) => void;
+  dragOverAstElement: AstElement | null;
+  setDragOverAstElement: (dragOvered: AstElement) => void;
 }
 const recursivlyRenderAstNode = ({
   ast,
   selectedAstElement,
   editingSelectedAstElement,
   setSelectedAstElement,
+  handleOnClick,
   handleOnDragStart,
   handleOnDragOver,
+  handleOnDragLeave,
   handleOnDrop,
+  dragOverAstElement,
+  setDragOverAstElement,
 }: RecursivlyRenderAstNodeProps): JSX.Element | string => {
   const isTextElement = "innerType" in ast;
   // Base case: If the node is a text node, render it as is
@@ -34,31 +41,29 @@ const recursivlyRenderAstNode = ({
 
   const node: AstElement = ast;
   // Otherwise, it's an element node
-  const { uuid, type, props, children, events } = node;
+  const { uuid, type, props, children } = node;
   const isSelectedElement =
     selectedAstElement && selectedAstElement.uuid === uuid;
 
-  // Define event listeners if they exist in props
-  // FIXME: type is not correct.
-  const eventListeners: {
+  // register event for web-editor
+  const editorEventListeners: {
     [key: string]: React.EventHandler<SyntheticEvent> | undefined;
-  } = {
-    // 註冊在全部元素上
-    onClick: (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setSelectedAstElement(node);
-      events["onClick"] && dispatchEvent(events["onClick"]);
-    },
+  } = {};
+  editorEventListeners.onClick = (e: React.MouseEvent) => {
+    handleOnClick(e, node);
   };
   if (isSelectedElement) {
-    eventListeners.onDragStart = (e: React.DragEvent) => {
+    editorEventListeners.onDragStart = (e: React.DragEvent) => {
       handleOnDragStart(e);
     };
   } else {
-    eventListeners.onDragOver = (e: React.DragEvent) => {
+    editorEventListeners.onDragOver = (e: React.DragEvent) => {
       handleOnDragOver(e);
     };
-    eventListeners.onDrop = (e: React.DragEvent) => {
+    editorEventListeners.onDragLeave = (e: React.DragEvent) => {
+      handleOnDragLeave(e);
+    };
+    editorEventListeners.onDrop = (e: React.DragEvent) => {
       handleOnDrop(e, node);
     };
   }
@@ -71,9 +76,13 @@ const recursivlyRenderAstNode = ({
           selectedAstElement,
           editingSelectedAstElement,
           setSelectedAstElement,
+          handleOnClick,
           handleOnDragStart,
           handleOnDragOver,
+          handleOnDragLeave,
           handleOnDrop,
+          dragOverAstElement,
+          setDragOverAstElement,
         })
       )
     : children;
@@ -82,11 +91,11 @@ const recursivlyRenderAstNode = ({
     type,
     {
       ...props,
-      ...eventListeners,
+      ...editorEventListeners,
       draggable: isSelectedElement,
       style: {
         ...props.style,
-        ...(isSelectedElement ? editingSelectedAstElement?.props.style : {}),
+        ...(isSelectedElement ? editingSelectedAstElement?.props.style : {}), // 將編輯中的節點樣式覆蓋到畫面上
       },
       className: clsx([
         props.className,
@@ -106,26 +115,46 @@ const RenderReactAST: React.FC = () => {
     editingSelectedAstElement,
     setSelectedAstElement,
   } = useAst();
-  const handleOnDragStart: React.DragEventHandler = (ev) => {
-    ev.dataTransfer.effectAllowed = "move";
-    ev.dataTransfer.setData(
-      "application/json",
-      JSON.stringify(selectedAstElement)
+  const [dragOverAstElement, setDragOverAstElement] =
+    useState<AstElement | null>(null);
+
+  const handleOnClick: (ev: React.MouseEvent, node: AstElement) => void =
+    useCallback(
+      (e, selected) => {
+        e.stopPropagation();
+        setSelectedAstElement(selected);
+      },
+      [setSelectedAstElement]
     );
-  };
-  const handleOnDragOver: React.DragEventHandler = (ev) => {
+
+  const handleOnDragStart: React.DragEventHandler = useCallback(
+    (ev) => {
+      ev.dataTransfer.effectAllowed = "move";
+      ev.dataTransfer.setData(
+        "application/json",
+        JSON.stringify(selectedAstElement)
+      );
+    },
+    [selectedAstElement]
+  );
+
+  const handleOnDragOver: React.DragEventHandler = useCallback((ev) => {
     ev.preventDefault();
     ev.dataTransfer.dropEffect = "move";
-  };
-  const handleOnDrop: (ev: React.DragEvent, node: AstElement) => void = (
-    ev,
-    drop
-  ) => {
-    const data = ev.dataTransfer.getData("application/json");
-    const drag = JSON.parse(data);
-    console.log(`drag: ${JSON.stringify(drag)}`);
-    console.log(`drop: ${JSON.stringify(drop)}`);;
-  };
+  }, []);
+
+  const handleOnDragLeave: React.DragEventHandler = useCallback((ev) => {
+    ev.preventDefault();
+  }, []);
+
+  const handleOnDrop: (ev: React.DragEvent, node: AstElement) => void =
+    useCallback((ev, drop) => {
+      const data = ev.dataTransfer.getData("application/json");
+      const drag = JSON.parse(data);
+      console.log(`drag: ${JSON.stringify(drag)}`);
+      console.log(`drop: ${JSON.stringify(drop)}`);
+    }, []);
+
   return (
     <div id="ast-renderer">
       {recursivlyRenderAstNode({
@@ -133,9 +162,13 @@ const RenderReactAST: React.FC = () => {
         selectedAstElement,
         editingSelectedAstElement,
         setSelectedAstElement,
+        handleOnClick,
         handleOnDragStart,
         handleOnDragOver,
+        handleOnDragLeave,
         handleOnDrop,
+        dragOverAstElement,
+        setDragOverAstElement,
       })}
     </div>
   );

@@ -141,7 +141,7 @@ const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
         const isTextElement = "innerType" in child;
         const marginLeft = `${10 * level}px`;
         return (
-          <div className="ast-tree-panel-item" style={{ marginLeft }}>
+          <div key={`ast-tree-panel-item-${child.uuid}`} className="ast-tree-panel-item" style={{ marginLeft }}>
             {isTextElement ? (
               <span className="ast-tree-panel-item__content">
                 {child.content}
