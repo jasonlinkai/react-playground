@@ -3,6 +3,7 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { EventNames } from "./event";
 import { AstElement } from "./RenderReactAst/ast";
+import { StyleEnum } from "./StyleEditor";
 
 const rootAstNode: AstElement = {
   uuid: "1",
@@ -79,23 +80,26 @@ const rootAstNode: AstElement = {
 };
 
 // Define the shape of our context
+
+export interface UpdateAstElementFuncProps {
+  newAstElement: AstElement;
+}
+
 interface AstContextType {
   ast: AstElement;
   selectedAstElement: AstElement | null;
   setSelectedAstElement: (selectedAstElement: AstElement) => void;
   editingSelectedAstElement: AstElement | null;
   setEditingSelectedAstElement: (editingSelectedAstElement: AstElement) => void;
-  updateAstElementStyleByUuid: ({
-    uuid,
-    updates,
-  }: UpdateAstElementFuncProps) => void;
+  updateEditingSelectedAstElementStyle: ({
+    styleKey,
+    styleValue,
+  }: {
+    styleKey: StyleEnum;
+    styleValue: string;
+  }) => void;
+  updateAstElement: ({ newAstElement }: UpdateAstElementFuncProps) => void;
 }
-
-export interface UpdateAstElementFuncProps {
-  uuid: AstElement["uuid"];
-  updates: React.CSSProperties;
-}
-
 // Create a context with initial values
 const AstContext = createContext<AstContextType>({
   ast: rootAstNode,
@@ -103,35 +107,36 @@ const AstContext = createContext<AstContextType>({
   setSelectedAstElement: (selectedAstElement: AstElement) => {},
   editingSelectedAstElement: null,
   setEditingSelectedAstElement: (editingSelectedAstElement: AstElement) => {},
-  updateAstElementStyleByUuid: ({
-    uuid,
-    updates,
-  }: UpdateAstElementFuncProps) => {},
+  updateEditingSelectedAstElementStyle: ({
+    styleKey,
+    styleValue,
+  }: {
+    styleKey: StyleEnum;
+    styleValue: string;
+  }) => {},
+  updateAstElement: ({ newAstElement }: UpdateAstElementFuncProps) => {},
 });
 
 // Create a custom hook to use the AstContext
 export const useAst = () => useContext(AstContext);
 
-const travralTreeAndUpdateStyle = ({
+const travralTreeAndUpdate = ({
   node,
-  uuid,
-  updates,
+  newAstElement,
 }: { node: AstElement } & UpdateAstElementFuncProps): boolean => {
-  if (node.uuid === uuid) {
-    node.props = {
-      ...node.props,
-      style: updates,
-    };
+  if (node.uuid === newAstElement.uuid) {
+    node.props = newAstElement.props;
+    node.events = newAstElement.events;
+    node.children = newAstElement.children;
     return true;
   } else if (node.children) {
     for (let child of node.children) {
       const isTextElement = "innerType" in child;
       if (!isTextElement) {
         if (
-          travralTreeAndUpdateStyle({
+          travralTreeAndUpdate({
             node: child as AstElement,
-            uuid,
-            updates,
+            newAstElement,
           })
         ) {
           return true;
@@ -154,16 +159,36 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
   const setSelectedAstElement = useCallback(
     (selected: AstElement | null) => {
       if (selected && selected.uuid !== selectedAstElement?.uuid) {
-        _setSelectedAstElement({ ...selected });
-        setEditingSelectedAstElement({ ...selected });
+        const copiedSelected = JSON.parse(JSON.stringify(selected));
+        _setSelectedAstElement(selected);
+        setEditingSelectedAstElement(copiedSelected);
       }
     },
     [selectedAstElement]
   );
-  const updateAstElementStyleByUuid = useCallback(
-    ({ uuid, updates }: UpdateAstElementFuncProps) => {
+  const updateEditingSelectedAstElementStyle = useCallback(
+    ({ styleKey, styleValue }: { styleKey: StyleEnum; styleValue: string }) => {
+      if (editingSelectedAstElement) {
+        setEditingSelectedAstElement({
+          ...editingSelectedAstElement,
+          props: {
+            ...editingSelectedAstElement.props,
+            style: {
+              ...editingSelectedAstElement.props.style,
+              [styleKey]: styleValue,
+            },
+          },
+        });
+      }
+    },
+    [editingSelectedAstElement]
+  );
+
+  // 保存異動後的編輯節點至樹上
+  const updateAstElement = useCallback(
+    ({ newAstElement }: UpdateAstElementFuncProps) => {
       const newAst: AstElement = JSON.parse(JSON.stringify(ast));
-      travralTreeAndUpdateStyle({ node: newAst, uuid, updates });
+      travralTreeAndUpdate({ node: newAst, newAstElement: newAstElement });
       setAst(newAst);
     },
     [ast]
@@ -176,7 +201,8 @@ export const AstProvider: React.FC<React.PropsWithChildren> = ({
         setSelectedAstElement,
         editingSelectedAstElement,
         setEditingSelectedAstElement,
-        updateAstElementStyleByUuid,
+        updateEditingSelectedAstElementStyle,
+        updateAstElement,
       }}
     >
       {children}

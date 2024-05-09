@@ -7,7 +7,7 @@ export interface AstElementSharedProps {
 
 export interface AstElement extends AstElementSharedProps {
   type: keyof React.ReactHTML;
-  props: any; // FIXME: type is not correct.
+  props: Record<string, any>; // FIXME: type is not correct.
   events: {
     onClick?: Event<EventNames>;
   };

@@ -11,27 +11,23 @@ interface RecursivlyRenderAstNodeProps {
   ast: AstNode;
   selectedAstElement: AstElement | null;
   editingSelectedAstElement: AstElement | null;
-  setSelectedAstElement: (selected: AstElement) => void;
+  dragOverAstElement: AstElement | null;
   handleOnClick: (ev: React.MouseEvent, node: AstElement) => void;
   handleOnDragStart: (ev: React.DragEvent) => void;
   handleOnDragOver: (ev: React.DragEvent, node: AstElement) => void;
   handleOnDragLeave: (ev: React.DragEvent, node: AstElement) => void;
   handleOnDrop: (ev: React.DragEvent, node: AstElement) => void;
-  dragOverAstElement: AstElement | null;
-  setDragOverAstElement: (dragOvered: AstElement) => void;
 }
 const recursivlyRenderAstNode = ({
   ast,
   selectedAstElement,
   editingSelectedAstElement,
-  setSelectedAstElement,
+  dragOverAstElement,
   handleOnClick,
   handleOnDragStart,
   handleOnDragOver,
   handleOnDragLeave,
   handleOnDrop,
-  dragOverAstElement,
-  setDragOverAstElement,
 }: RecursivlyRenderAstNodeProps): JSX.Element | string => {
   const isTextElement = "innerType" in ast;
   // Base case: If the node is a text node, render it as is
@@ -76,14 +72,12 @@ const recursivlyRenderAstNode = ({
           ast: child,
           selectedAstElement,
           editingSelectedAstElement,
-          setSelectedAstElement,
+          dragOverAstElement,
           handleOnClick,
           handleOnDragStart,
           handleOnDragOver,
           handleOnDragLeave,
           handleOnDrop,
-          dragOverAstElement,
-          setDragOverAstElement,
         })
       )
     : children;
@@ -145,23 +139,19 @@ const RenderReactAST: React.FC = () => {
       ev.preventDefault();
       ev.dataTransfer.dropEffect = "move";
       setDragOverAstElement(inAstElement);
-      console.log('inAstElement', inAstElement)
     }, []);
 
   const handleOnDragLeave: (ev: React.DragEvent, node: AstElement) => void =
     useCallback((ev, leaveAstElement) => {
       ev.preventDefault();
       setDragOverAstElement(null);
-      console.log('leaveAstElement', leaveAstElement)
     }, []);
 
   const handleOnDrop: (ev: React.DragEvent, node: AstElement) => void =
     useCallback((ev, drop) => {
-      const data = ev.dataTransfer.getData("application/json");
-      const drag = JSON.parse(data);
+      // const data = ev.dataTransfer.getData("application/json");
+      // const drag = JSON.parse(data);
       setDragOverAstElement(null);
-      console.log(`drag: ${JSON.stringify(drag)}`);
-      console.log(`drop: ${JSON.stringify(drop)}`);
     }, []);
 
   return (
@@ -170,14 +160,12 @@ const RenderReactAST: React.FC = () => {
         ast,
         selectedAstElement,
         editingSelectedAstElement,
-        setSelectedAstElement,
         handleOnClick,
         handleOnDragStart,
         handleOnDragOver,
         handleOnDragLeave,
         handleOnDrop,
         dragOverAstElement,
-        setDragOverAstElement,
       })}
     </div>
   );

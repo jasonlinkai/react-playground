@@ -1,9 +1,9 @@
 import "./styleEditor.css";
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import { useAst } from "../AstProvider";
 import { AstElement } from "../RenderReactAst/ast";
 
-enum StyleEnum {
+export enum StyleEnum {
   width = "width",
   height = "height",
   color = "color",
@@ -141,7 +141,11 @@ const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
         const isTextElement = "innerType" in child;
         const marginLeft = `${10 * level}px`;
         return (
-          <div key={`ast-tree-panel-item-${child.uuid}`} className="ast-tree-panel-item" style={{ marginLeft }}>
+          <div
+            key={`ast-tree-panel-item-${child.uuid}`}
+            className="ast-tree-panel-item"
+            style={{ marginLeft }}
+          >
             {isTextElement ? (
               <span className="ast-tree-panel-item__content">
                 {child.content}
@@ -172,22 +176,17 @@ const AstTreePanel = ({ root }: { root: AstElement }) => {
 const StyleEditor = () => {
   const {
     editingSelectedAstElement,
-    setEditingSelectedAstElement,
-    updateAstElementStyleByUuid,
+    updateEditingSelectedAstElementStyle,
+    updateAstElement,
   } = useAst();
 
   const saveAst = () => {
     if (editingSelectedAstElement) {
-      updateAstElementStyleByUuid({
-        uuid: editingSelectedAstElement?.uuid,
-        updates: editingSelectedAstElement.props.style,
+      updateAstElement({
+        newAstElement: editingSelectedAstElement,
       });
     }
   };
-
-  const styleObj = useMemo(() => {
-    return editingSelectedAstElement?.props.style;
-  }, [editingSelectedAstElement]);
 
   if (!editingSelectedAstElement) {
     return <div style={{ color: "white" }}>請先選擇節點</div>;
@@ -206,18 +205,9 @@ const StyleEditor = () => {
           <Component
             key={styleKey}
             label={styleKey}
-            value={`${styleObj[styleKey] || ""}`}
+            value={`${editingSelectedAstElement.props.style[styleKey] || ""}`}
             onChange={(v) => {
-              setEditingSelectedAstElement({
-                ...editingSelectedAstElement,
-                props: {
-                  ...editingSelectedAstElement.props,
-                  style: {
-                    ...styleObj,
-                    [styleKey]: v,
-                  },
-                },
-              });
+              updateEditingSelectedAstElementStyle({ styleKey, styleValue: v });
             }}
             {...props}
           />
