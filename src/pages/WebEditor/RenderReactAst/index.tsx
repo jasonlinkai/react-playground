@@ -38,7 +38,7 @@ interface RecursivlyRenderAstNodeProps {
 //   const node: AstElement = ast;
 //   // Otherwise, it's an element node
 //   const { uuid, type, props, children } = node;
-//   const isRootElement = node.parentUuid === "root";
+//   const isRootElement = node.parent === "root";
 //   const isSelectedElement =
 //     selectedAstElement && selectedAstElement.uuid === uuid;
 //   const isDragOverAstElement =
@@ -128,7 +128,7 @@ const RenderNode: React.FC<RecursivlyRenderAstNodeProps> = memo(
     const node: AstElement = ast;
     // Otherwise, it's an element node
     const { uuid, type, props, children } = node;
-    const isRootElement = node.parentUuid === "root";
+    const isRootElement = node.parent === "root";
     const isSelectedElement =
       selectedAstElement && selectedAstElement.uuid === uuid;
     const isDragOverAstElement =

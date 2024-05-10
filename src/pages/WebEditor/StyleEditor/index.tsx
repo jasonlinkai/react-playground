@@ -196,8 +196,8 @@ const StyleEditor = () => {
     <div className="style-editor">
       <NormalText label={"uuid"} value={editingSelectedAstElement.uuid} />
       <NormalText
-        label={"parentUuid"}
-        value={editingSelectedAstElement.parentUuid}
+        label={"parent"}
+        value={editingSelectedAstElement.parent || ''}
       />
       {styleKeys.map((styleKey) => {
         const { Component, props } = renderConfigs[styleKey];

@@ -1,12 +1,17 @@
 import { Event, EventNames } from "../event";
 
+export enum ElementType {
+  div = 'div',
+  button = 'button',
+}
+
 export interface AstElementSharedProps {
   uuid: string;
-  parentUuid: string;
+  parent: string | undefined;
 }
 
 export interface AstElement extends AstElementSharedProps {
-  type: keyof React.ReactHTML;
+  type: 'div' | 'button';
   props: Record<string, any>; // FIXME: type is not correct.
   events: {
     onClick?: Event<EventNames>;

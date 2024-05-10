@@ -2,13 +2,14 @@
 
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { EventNames } from "./event";
-import { AstElement, AstNode } from "./RenderReactAst/ast";
+import { AstElement, ElementType } from "./RenderReactAst/ast";
 import { StyleEnum } from "./StyleEditor";
+import { useStores } from "../../mobx/useMobxStateTreeStores";
 
-const rootAstNode: AstElement = {
+export const rootAstNode = {
   uuid: "1",
-  parentUuid: "root",
-  type: "div",
+  parent: undefined,
+  type: ElementType.div,
   props: {
     key: "key_1",
     className: "container",
@@ -27,8 +28,8 @@ const rootAstNode: AstElement = {
   children: [
     {
       uuid: "2",
-      parentUuid: "1",
-      type: "button",
+      parent: "1",
+      type: ElementType.button,
       props: {
         key: "key_2",
         style: {
@@ -45,14 +46,14 @@ const rootAstNode: AstElement = {
       children: [
         {
           uuid: "3",
-          parentUuid: "2",
+          parent: "2",
           innerType: "inner-text",
           content: "Click me",
         },
         {
           uuid: "4",
-          parentUuid: "2",
-          type: "div",
+          parent: "2",
+          type: ElementType.div,
           props: {
             key: "key_4",
             className: "",
@@ -62,8 +63,8 @@ const rootAstNode: AstElement = {
           children: [
             {
               uuid: "5",
-              parentUuid: "4",
-              type: "div",
+              parent: "4",
+              type: ElementType.div,
               props: {
                 key: "key_5",
                 className: "",
@@ -86,7 +87,7 @@ export interface UpdateAstElementFuncProps {
 }
 
 interface AstContextType {
-  ast: AstElement;
+  ast: any;
   selectedAstElement: AstElement | null;
   setSelectedAstElement: (selectedAstElement: AstElement) => void;
   editingSelectedAstElement: AstElement | null;
@@ -187,7 +188,9 @@ const travralTreeAndUpdate = ({
 export const AstProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const [ast, setAst] = useState<AstElement>(rootAstNode);
+  const { ast } = useStores();
+  const setAst = (v: any) => console.log(setAst);
+  // const [ast, setAst] = useState<AstElement>(rootAstNode);
   const [selectedAstElement, _setSelectedAstElement] =
     useState<AstElement | null>(null);
   const [editingSelectedAstElement, setEditingSelectedAstElement] =

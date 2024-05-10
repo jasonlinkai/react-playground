@@ -12,6 +12,10 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "clsx": "^2.1.1",
+    "mobx": "^6.12.3",
+    "mobx-react-lite": "^4.0.7",
+    "mobx-state-tree": "^6.0.0",
+    "mst-middlewares": "^6.0.0",
     "react": "^19.0.0-beta-1beb73de0f-20240503",
     "react-dom": "^19.0.0-beta-1beb73de0f-20240503",
     "react-error-boundary": "^4.0.13",
@@ -50,6 +54,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "remotedev": "^0.2.9"
   }
 }
