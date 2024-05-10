@@ -38,9 +38,11 @@ const recursivlyRenderAstNode = ({
   const node: AstElement = ast;
   // Otherwise, it's an element node
   const { uuid, type, props, children } = node;
+  const isRootElement = node.parentUuid === 'root';
   const isSelectedElement =
     selectedAstElement && selectedAstElement.uuid === uuid;
   const isDragOverAstElement = dragOverAstElement && dragOverAstElement.uuid === node.uuid;
+  const draggable  = !isRootElement && isSelectedElement;
 
   // register event for web-editor
   const editorEventListeners: {
@@ -49,7 +51,7 @@ const recursivlyRenderAstNode = ({
   editorEventListeners.onClick = (e: React.MouseEvent) => {
     handleOnClick(e, node);
   };
-  if (isSelectedElement) {
+  if (draggable) {
     editorEventListeners.onDragStart = (e: React.DragEvent) => {
       handleOnDragStart(e);
     };
@@ -87,7 +89,7 @@ const recursivlyRenderAstNode = ({
     {
       ...props,
       ...editorEventListeners,
-      draggable: isSelectedElement,
+      draggable,
       style: {
         ...props.style,
         ...(isSelectedElement ? editingSelectedAstElement?.props.style : {}), // 將編輯中的節點樣式覆蓋到畫面上

@@ -213,8 +213,8 @@ const StyleEditor = () => {
           />
         );
       })}
-      <AstTreePanel root={editingSelectedAstElement} />
       <button onClick={saveAst}>save</button>
+      <AstTreePanel root={editingSelectedAstElement} />
     </div>
   );
 };
