@@ -1,7 +1,8 @@
 import "./styleEditor.css";
 import { Fragment } from "react";
-import { useAst } from "../AstProvider";
-import { AstElement } from "../RenderReactAst/ast";
+import { observer } from "mobx-react-lite";
+import { useStores } from "../../../mobx/useMobxStateTreeStores";
+import { AstNodeType } from "../../../mobx/AstNode";
 
 export enum StyleEnum {
   width = "width",
@@ -134,11 +135,11 @@ const renderConfigs = {
   },
 };
 
-const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
+const AstTree = ({ root, level = 0 }: { root: AstNodeType; level?: number }) => {
   return (
     <Fragment>
       {root.children.map((child) => {
-        const isTextElement = "innerType" in child;
+        const { isPureTextNode } = (child as AstNodeType);
         const marginLeft = `${10 * level}px`;
         return (
           <div
@@ -146,7 +147,7 @@ const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
             className="ast-tree-panel-item"
             style={{ marginLeft }}
           >
-            {isTextElement ? (
+            {isPureTextNode ? (
               <span className="ast-tree-panel-item__content">
                 {child.content}
               </span>
@@ -164,7 +165,7 @@ const AstTree = ({ root, level = 0 }: { root: AstElement; level?: number }) => {
   );
 };
 
-const AstTreePanel = ({ root }: { root: AstElement }) => {
+const AstTreePanel = ({ root }: { root: AstNodeType }) => {
   return (
     <div className="ast-tree-panel">
       <div className="ast-tree-panel__title">AstTreePanel</div>
@@ -173,31 +174,27 @@ const AstTreePanel = ({ root }: { root: AstElement }) => {
   );
 };
 
-const StyleEditor = () => {
-  const {
-    editingSelectedAstElement,
-    updateEditingSelectedAstElementStyle,
-    updateAstElement,
-  } = useAst();
+const StyleEditor = observer(() => {
+  console.log("StyleEditor rerender");
+  const { editor } = useStores();
+  const { editingSelectedAstNode } = editor;
+  const node = (editingSelectedAstNode as AstNodeType);
 
   const saveAst = () => {
-    if (editingSelectedAstElement) {
-      updateAstElement({
-        newAstElement: editingSelectedAstElement,
-      });
+    if (node) {
     }
   };
 
-  if (!editingSelectedAstElement) {
-    return <div style={{ color: "white" }}>請先選擇節點</div>;
+  if (!node) {
+    return <div style={{ color: "white" }}>請先選擇節點 </div>;
   }
 
   return (
     <div className="style-editor">
-      <NormalText label={"uuid"} value={editingSelectedAstElement.uuid} />
+      <NormalText label={"uuid"} value={node.uuid} />
       <NormalText
         label={"parent"}
-        value={editingSelectedAstElement.parent || ''}
+        value={node?.parent?.uuid || ""}
       />
       {styleKeys.map((styleKey) => {
         const { Component, props } = renderConfigs[styleKey];
@@ -205,18 +202,18 @@ const StyleEditor = () => {
           <Component
             key={styleKey}
             label={styleKey}
-            value={`${editingSelectedAstElement.props.style[styleKey] || ""}`}
+            value={`${node.props.style[styleKey] || ""}`}
             onChange={(v) => {
-              updateEditingSelectedAstElementStyle({ styleKey, styleValue: v });
+              node.updateStyle({ styleKey, styleValue: v });
             }}
             {...props}
           />
         );
       })}
       <button onClick={saveAst}>save</button>
-      <AstTreePanel root={editingSelectedAstElement} />
+      <AstTreePanel root={node} />
     </div>
   );
-};
+});
 
 export default StyleEditor;

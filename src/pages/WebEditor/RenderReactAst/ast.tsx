@@ -1,8 +1,9 @@
 import { Event, EventNames } from "../event";
 
 export enum ElementType {
-  div = 'div',
-  button = 'button',
+  "pure-text" = "pure-text",
+  div = "div",
+  button = "button",
 }
 
 export interface AstElementSharedProps {
@@ -11,7 +12,7 @@ export interface AstElementSharedProps {
 }
 
 export interface AstElement extends AstElementSharedProps {
-  type: 'div' | 'button';
+  type: "div" | "button";
   props: Record<string, any>; // FIXME: type is not correct.
   events: {
     onClick?: Event<EventNames>;

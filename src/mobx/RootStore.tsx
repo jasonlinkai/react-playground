@@ -1,15 +1,11 @@
 import { types as t, Instance } from "mobx-state-tree";
 import { AstNode } from "./AstNode";
+import { Editor } from "./Editor";
 
 export const RootStore = t
   .model("RootStore", {
     ast: t.maybe(AstNode),
-  })
-  .actions(self => {
-    const afterCreate = () => {
-      console.log(self.ast);
-    };
-    return { afterCreate };
+    editor: t.optional(Editor, {}),
   })
 
 export interface IStore extends Instance<typeof RootStore> {}

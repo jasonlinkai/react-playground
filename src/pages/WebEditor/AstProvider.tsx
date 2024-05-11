@@ -1,84 +1,10 @@
 // AstContext.tsx
 
 import React, { createContext, useCallback, useContext, useState } from "react";
-import { EventNames } from "./event";
-import { AstElement, ElementType } from "./RenderReactAst/ast";
+import { AstElement } from "./RenderReactAst/ast";
 import { StyleEnum } from "./StyleEditor";
 import { useStores } from "../../mobx/useMobxStateTreeStores";
-
-export const rootAstNode = {
-  uuid: "1",
-  parent: undefined,
-  type: ElementType.div,
-  props: {
-    key: "key_1",
-    className: "container",
-    style: {
-      width: "100%",
-      height: "100%",
-      backgroundColor: "yellow",
-    },
-  },
-  events: {
-    onClick: {
-      type: EventNames.NAVIGATE,
-      payload: { path: "/about!" },
-    },
-  },
-  children: [
-    {
-      uuid: "2",
-      parent: "1",
-      type: ElementType.button,
-      props: {
-        key: "key_2",
-        style: {
-          color: "blue",
-          width: "100px",
-        },
-      },
-      events: {
-        onClick: {
-          type: EventNames.NAVIGATE,
-          payload: { path: "/test!" },
-        },
-      },
-      children: [
-        {
-          uuid: "3",
-          parent: "2",
-          innerType: "inner-text",
-          content: "Click me",
-        },
-        {
-          uuid: "4",
-          parent: "2",
-          type: ElementType.div,
-          props: {
-            key: "key_4",
-            className: "",
-            style: {},
-          },
-          events: {},
-          children: [
-            {
-              uuid: "5",
-              parent: "4",
-              type: ElementType.div,
-              props: {
-                key: "key_5",
-                className: "",
-                style: {},
-              },
-              events: {},
-              children: [],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-};
+import { rootAstNode } from "./templates";
 
 // Define the shape of our context
 
@@ -147,42 +73,6 @@ const travralTreeAndUpdate = ({
   }
   return false;
 };
-
-// const flattenAstToLevelMatric = ({
-//   tree,
-//   levelMatrix = [],
-//   level = 0,
-// }: {
-//   tree: AstNode;
-//   flattenTree?: Map<string, AstNode>;
-//   levelMatrix?: AstNode[][];
-//   level?: number;
-// }) => {
-//   if (!levelMatrix[level]) levelMatrix[level] = [];
-//   levelMatrix[level].push(tree);
-//   if ("children" in tree) {
-//     tree.children.forEach((child) => {
-//       flattenAstToLevelMatric({ tree: child, levelMatrix, level: level + 1 });
-//     });
-//   }
-//   return levelMatrix;
-// };
-
-// const getAstUuidMapByLevelMatrix = ({
-//   levelMatrix,
-// }: {
-//   levelMatrix: AstNode[][];
-// }) => {
-//   const astUuidMap: Map<string, AstNode> = levelMatrix.reduce((acc, level) => {
-//     level.forEach((node) => {
-//       acc.set(node.uuid, node);
-//     });
-//     return acc;
-//   }, new Map());
-//   return astUuidMap;
-// };
-// const levelMatrix = flattenAstToLevelMatric({ tree: rootAstNode });
-// const astUuidMap = getAstUuidMapByLevelMatrix({ levelMatrix });
 
 // Create a provider component to wrap your app with
 export const AstProvider: React.FC<React.PropsWithChildren> = ({
