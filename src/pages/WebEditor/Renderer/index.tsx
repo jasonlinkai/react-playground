@@ -34,6 +34,7 @@ const Renderer: React.FC = observer(() => {
     node: AstNodeModelType
   ) => void = useCallback((ev, node) => {
     ev.preventDefault();
+    ev.stopPropagation();
     ev.dataTransfer.dropEffect = "move";
     node.setIsDragOvered(true);
   }, []);
@@ -43,6 +44,7 @@ const Renderer: React.FC = observer(() => {
     node: AstNodeModelType
   ) => void = useCallback((ev, node) => {
     ev.preventDefault();
+    ev.stopPropagation();
     node.setIsDragOvered(false);
   }, []);
 
