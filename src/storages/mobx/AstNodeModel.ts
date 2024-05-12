@@ -59,10 +59,12 @@ export const AstNodeModel = t
     isSelected: boolean;
     isDragOvered: boolean;
     editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>;
+    editingContent: string,
   }>(() => ({
     isSelected: false,
     isDragOvered: false,
     editingStyle: {},
+    editingContent: '',
   }))
   .views((self) => ({
     get isRootNode() {
@@ -73,6 +75,9 @@ export const AstNodeModel = t
     },
   }))
   .actions((self) => ({
+    setEditingContent(content: string) {
+      self.editingContent = content;
+    },
     setParent(uuid: string) {
       self.parent = uuid;
     },
@@ -84,6 +89,9 @@ export const AstNodeModel = t
     },
     save() {
       self.props.style = AstNodeModelPropsStyle.create(self.editingStyle);
+      if (self.isPureTextNode) {
+        self.content = self.editingContent;
+      }
     },
     setEditingStyle(
       editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>

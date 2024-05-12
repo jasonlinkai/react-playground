@@ -19,9 +19,15 @@ export const EditorModel = t
         if (!self.selectedAstNode) {
           self.selectedAstNode = node;
           node.setEditingStyle(node.props.style);
+          if (node.isPureTextNode) {
+            node.setEditingContent(node.content || "");
+          }
         } else {
           if (node.uuid !== self.selectedAstNode.uuid) {
             self.selectedAstNode.setEditingStyle({});
+            if (node.isPureTextNode) {
+              node.setEditingContent(node.content || "");
+            }
             self.selectedAstNode = node;
             node.setEditingStyle(getSnapshot(node.props.style));
           }

@@ -16,7 +16,6 @@ interface RenderNodeProps {
 
 const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
   if (!ast) return null;
-  console.log('RenderNode', ast.uuid);
   const {
     editor,
   } = useStores()
@@ -27,17 +26,17 @@ const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
     handleOnDragLeave,
     handleOnDrop,
   } = p;
+  const isSelectedNode = ast.uuid === editor.selectedAstNode?.uuid;
+  const draggable = !ast.isRootNode && isSelectedNode;
   const isPureTextNode = ast.isPureTextNode;
   // Base case: If the node is a text node, render it as is
   if (isPureTextNode) {
-    return ast.content;
+    return isSelectedNode ? ast.editingContent : ast.content;
   }
 
   const node: AstNodeModelType = ast;
   // Otherwise, it's an element node
   const { type, props, editingStyle, children } = node;
-  const isSelectedNode = node.uuid === editor.selectedAstNode?.uuid;
-  const draggable = !node.isRootNode && isSelectedNode;
 
   // register event for web-editor
   const editorEventListeners: {

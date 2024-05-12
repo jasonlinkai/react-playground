@@ -155,6 +155,15 @@ const StyleEditor = observer(() => {
           />
         );
       })}
+      {node.isPureTextNode && (
+        <NormalInput
+          label="content"
+          value={node.editingContent || ''}
+          onChange={(v) => {
+            node.setEditingContent(v);
+          }}
+        ></NormalInput>
+      )}
       <button onClick={saveAst}>save</button>
       <AstTagTreePanel root={node} />
     </div>
