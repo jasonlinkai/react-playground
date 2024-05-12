@@ -1,20 +1,9 @@
-import "./styleEditor.css";
+import "./index.css";
 import { Fragment } from "react";
 import { observer } from "mobx-react-lite";
-import { useStores } from "../../../mobx/useMobxStateTreeStores";
-import { AstNodeType } from "../../../mobx/AstNode";
-
-export enum StyleEnum {
-  width = "width",
-  height = "height",
-  color = "color",
-  backgroundColor = "backgroundColor",
-  position = "position",
-  top = "top",
-  right = "right",
-  bottom = "bottom",
-  left = "left",
-}
+import { useStores } from "../../../../storages/mobx/useMobxStateTreeStores";
+import { AstNodeModelType } from "../../../../storages/mobx/AstNodeModel";
+import { StyleEnum } from "../../types";
 
 const styleKeys: StyleEnum[] = [...Object.values(StyleEnum)];
 
@@ -135,11 +124,11 @@ const renderConfigs = {
   },
 };
 
-const AstTree = ({ root, level = 0 }: { root: AstNodeType; level?: number }) => {
+const AstTree = ({ root, level = 0 }: { root: AstNodeModelType; level?: number }) => {
   return (
     <Fragment>
       {root.children.map((child) => {
-        const { isPureTextNode } = (child as AstNodeType);
+        const { isPureTextNode } = (child as AstNodeModelType);
         const marginLeft = `${10 * level}px`;
         return (
           <div
@@ -165,7 +154,7 @@ const AstTree = ({ root, level = 0 }: { root: AstNodeType; level?: number }) => 
   );
 };
 
-const AstTreePanel = ({ root }: { root: AstNodeType }) => {
+const AstTreePanel = ({ root }: { root: AstNodeModelType }) => {
   return (
     <div className="ast-tree-panel">
       <div className="ast-tree-panel__title">AstTreePanel</div>
@@ -177,8 +166,8 @@ const AstTreePanel = ({ root }: { root: AstNodeType }) => {
 const StyleEditor = observer(() => {
   console.log("StyleEditor rerender");
   const { editor } = useStores();
-  const { editingSelectedAstNode } = editor;
-  const node = (editingSelectedAstNode as AstNodeType);
+  const { selectedAstNode } = editor;
+  const node = (selectedAstNode as AstNodeModelType);
 
   const saveAst = () => {
     if (node) {
@@ -202,9 +191,9 @@ const StyleEditor = observer(() => {
           <Component
             key={styleKey}
             label={styleKey}
-            value={`${node.props.style[styleKey] || ""}`}
+            value={`${node.editingStyle[styleKey] || ""}`}
             onChange={(v) => {
-              node.updateStyle({ styleKey, styleValue: v });
+              node.updateEditingStyle({ styleKey, styleValue: v });
             }}
             {...props}
           />

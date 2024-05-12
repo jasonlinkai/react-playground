@@ -1,17 +1,15 @@
-import "./webEditor.css";
-import Drawer from "./Drawer";
-import RenderReactAST from "./RenderReactAst";
-import { MobxStateTreeStoreProvider } from "../../mobx/MobxStateTreeProvider";
+import "./index.css";
+import LeftDrawer from "./LeftDrawer";
+import RenderReactAST from "./Renderer";
+import { MobxStateTreeStoreProvider } from "../../storages/mobx/MobxStateTreeProvider";
 
 const WebEditor: React.FC = () => {
   return (
     <MobxStateTreeStoreProvider>
-      {/* <AstProvider> */}
       <div id="web-editor">
-        <Drawer />
+        <LeftDrawer />
         <RenderReactAST />
       </div>
-      {/* </AstProvider> */}
     </MobxStateTreeStoreProvider>
   );
 };

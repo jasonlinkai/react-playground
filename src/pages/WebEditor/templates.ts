@@ -1,7 +1,7 @@
-import { ElementType } from "./RenderReactAst/ast";
-import { EventNames } from "./event";
+import { ElementType } from "./types";
+import { EventNames } from "../../utils/event";
 
-export const rootAstNode = {
+export const template1 = {
   uuid: "1",
   parent: undefined,
   type: ElementType.div,

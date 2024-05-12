@@ -1,13 +1,13 @@
-.side-drawer {
+.left-drawer {
   width: 0px;
   background-color: #030303;
 }
 
-.side-drawer.open {
+.left-drawer.open {
   width: 500px;
 }
 
-.open-drawer-button {
+.left-drawer .open-drawer-button {
   position: fixed;
   top: 20px;
   right: 20px;

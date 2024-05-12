@@ -1,6 +1,6 @@
 // store.js
 import { createStore } from "redux";
-import { employeeList } from "../datas/employees";
+import { employeeList } from "../../datas/employees";
 
 // Define reducer function
 const initialState = { count: 0, time: Date.now(), employeeList };

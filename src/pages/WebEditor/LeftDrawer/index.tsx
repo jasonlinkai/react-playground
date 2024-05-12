@@ -1,6 +1,6 @@
-import "./drawer.css";
+import "./index.css";
 import { useState } from "react";
-import StyleEditor from "../StyleEditor";
+import StyleEditor from "./StyleEditor";
 
 const Drawer: React.FC = () => {
   const [open, setOpen] = useState(true);
@@ -10,7 +10,7 @@ const Drawer: React.FC = () => {
   };
 
   return (
-    <div className={`side-drawer ${open ? "open" : ""}`}>
+    <div className={`left-drawer ${open ? "open" : ""}`}>
       <StyleEditor />
       <button className="open-drawer-button" onClick={toggleDrawer}>
         {open ? "Close Drawer" : "Open Drawer"}
