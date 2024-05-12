@@ -55,16 +55,29 @@ export const AstNodeModel = t
     content: t.maybe(t.string),
   })
   .volatile<{
+    isSelected: boolean,
+    isDragOvered: boolean,
     editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>;
   }>(() => ({
+    isSelected: false,
+    isDragOvered: false,
     editingStyle: {},
   }))
   .views((self) => ({
+    get isRootNode() {
+      return self.parent === undefined;
+    },
     get isPureTextNode() {
       return self.type === ElementType["pure-text"];
     },
   }))
   .actions((self) => ({
+    setIsSelected(v: boolean) {
+      self.isSelected = v;
+    },
+    setIsDragOvered(v: boolean) {
+      self.isDragOvered = v;
+    },
     save() {
       self.props.style = AstNodeModelPropsStyle.create(self.editingStyle);
     },

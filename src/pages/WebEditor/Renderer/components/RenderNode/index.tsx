@@ -3,11 +3,12 @@ import clsx from "clsx";
 import React, { SyntheticEvent } from "react";
 import { observer } from "mobx-react-lite";
 import { AstNodeModelType } from "../../../../../storages/mobx/AstNodeModel";
+import { useStores } from "../../../../../storages/mobx/useMobxStateTreeStores";
 
 interface RenderNodeProps {
   ast: AstNodeModelType | undefined;
   handleOnClick: (ev: React.MouseEvent, node: AstNodeModelType) => void;
-  handleOnDragStart: (ev: React.DragEvent) => void;
+  handleOnDragStart: (ev: React.DragEvent, node: AstNodeModelType) => void;
   handleOnDragOver: (ev: React.DragEvent, node: AstNodeModelType) => void;
   handleOnDragLeave: (ev: React.DragEvent, node: AstNodeModelType) => void;
   handleOnDrop: (ev: React.DragEvent, node: AstNodeModelType) => void;
@@ -16,6 +17,9 @@ interface RenderNodeProps {
 const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
   if (!ast) return null;
   console.log('RenderNode', ast.uuid);
+  const {
+    editor,
+  } = useStores()
   const {
     handleOnClick,
     handleOnDragStart,
@@ -32,10 +36,8 @@ const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
   const node: AstNodeModelType = ast;
   // Otherwise, it's an element node
   const { type, props, editingStyle, children } = node;
-  const isRootNode = node.parent === "root";
-  const isSelectedNode = false;
-  const isDragOverNode = false;
-  const draggable = !isRootNode && isSelectedNode;
+  const isSelectedNode = node.uuid === editor.selectedAstNode?.uuid;
+  const draggable = !node.isRootNode && isSelectedNode;
 
   // register event for web-editor
   const editorEventListeners: {
@@ -47,14 +49,16 @@ const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
   };
   if (draggable) {
     editorEventListeners.onDragStart = (e: React.DragEvent) => {
-      handleOnDragStart(e);
+      handleOnDragStart(e, node);
     };
   } else {
     editorEventListeners.onDragOver = (e: React.DragEvent) => {
       handleOnDragOver(e, node);
+      node.setIsDragOvered(true);
     };
     editorEventListeners.onDragLeave = (e: React.DragEvent) => {
       handleOnDragLeave(e, node);
+      node.setIsDragOvered(false);
     };
     editorEventListeners.onDrop = (e: React.DragEvent) => {
       handleOnDrop(e, node);
@@ -78,7 +82,7 @@ const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
         {
           "render-node": true,
           "selected-node": isSelectedNode,
-          "drag-over-node": isDragOverNode,
+          "drag-over-node": node.isDragOvered,
         },
       ]),
     },

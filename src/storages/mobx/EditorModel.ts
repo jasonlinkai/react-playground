@@ -10,11 +10,13 @@ import type { AstNodeModelType } from "./AstNodeModel";
 
 export const EditorModel = t
   .model("EditorModel", {
-    selectedAstNode: t.maybe(t.reference(t.late((): IAnyModelType => AstNodeModel))),
+    selectedAstNode: t.maybe(
+      t.reference(t.late((): IAnyModelType => AstNodeModel))
+    ),
   })
   .actions((self) => ({
-    setSelectedAstNode(selectedAstNode: AstNodeModelType) {
-      self.selectedAstNode = selectedAstNode;
+    setSelectedAstNode(node: AstNodeModelType) {
+      self.selectedAstNode = node;
     },
   }));
 

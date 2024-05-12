@@ -1,6 +1,6 @@
 import "./index.css";
 import LeftDrawer from "./LeftDrawer";
-import RenderReactAST from "./Renderer";
+import Renderer from "./Renderer";
 import { MobxStateTreeStoreProvider } from "../../storages/mobx/MobxStateTreeProvider";
 
 const WebEditor: React.FC = () => {
@@ -8,7 +8,7 @@ const WebEditor: React.FC = () => {
     <MobxStateTreeStoreProvider>
       <div id="web-editor">
         <LeftDrawer />
-        <RenderReactAST />
+        <Renderer />
       </div>
     </MobxStateTreeStoreProvider>
   );
