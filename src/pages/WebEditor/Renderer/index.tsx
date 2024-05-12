@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { AstNodeModelType } from "../../../storages/mobx/AstNodeModel";
 import { useStores } from "../../../storages/mobx/useMobxStateTreeStores";
 import RenderNode from "./components/RenderNode";
+import { getSnapshot } from "mobx-state-tree";
 
 const Renderer: React.FC = observer(() => {
   const { ast, editor } = useStores();
@@ -24,7 +25,7 @@ const Renderer: React.FC = observer(() => {
           console.log('in', 'selected', selected.props.style);
           selectedAstNode.setEditingStyle({});
           setSelectedAstNode(selected);
-          selected.setEditingStyle(selected.props.style);
+          selected.setEditingStyle(getSnapshot(selected.props.style));
         } else {
           console.log('out');
         }

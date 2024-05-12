@@ -124,11 +124,17 @@ const renderConfigs = {
   },
 };
 
-const AstTree = ({ root, level = 0 }: { root: AstNodeModelType; level?: number }) => {
+const AstTree = ({
+  root,
+  level = 0,
+}: {
+  root: AstNodeModelType;
+  level?: number;
+}) => {
   return (
     <Fragment>
       {root.children.map((child) => {
-        const { isPureTextNode } = (child as AstNodeModelType);
+        const { isPureTextNode } = child as AstNodeModelType;
         const marginLeft = `${10 * level}px`;
         return (
           <div
@@ -164,14 +170,12 @@ const AstTreePanel = ({ root }: { root: AstNodeModelType }) => {
 };
 
 const StyleEditor = observer(() => {
-  console.log("StyleEditor rerender");
   const { editor } = useStores();
   const { selectedAstNode } = editor;
-  const node = (selectedAstNode as AstNodeModelType);
+  const node = selectedAstNode as AstNodeModelType;
 
   const saveAst = () => {
-    if (node) {
-    }
+    node.save();
   };
 
   if (!node) {
@@ -181,10 +185,7 @@ const StyleEditor = observer(() => {
   return (
     <div className="style-editor">
       <NormalText label={"uuid"} value={node.uuid} />
-      <NormalText
-        label={"parent"}
-        value={node?.parent?.uuid || ""}
-      />
+      <NormalText label={"parent"} value={node?.parent?.uuid || ""} />
       {styleKeys.map((styleKey) => {
         const { Component, props } = renderConfigs[styleKey];
         return (

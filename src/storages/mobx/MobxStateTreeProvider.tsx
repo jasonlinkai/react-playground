@@ -19,7 +19,6 @@ if (process.env.NODE_ENV === "development") {
 
 onSnapshot(store, (snapshot) => {
   localStorage.setItem("RootStore", JSON.stringify(snapshot));
-  console.log('snapshot.editor', snapshot.editor);
 });
 
 export const MobxStateTreeStoreProvider: React.FC<React.PropsWithChildren> = ({

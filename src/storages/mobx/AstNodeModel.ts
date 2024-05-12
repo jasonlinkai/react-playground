@@ -21,7 +21,9 @@ const AstNodeModelPropsStyle = t.model("AstNodeModelPropsStyle", {
   left: t.maybe(t.string),
 });
 
-export type AstNodeModelPropsStyleType = Instance<typeof AstNodeModelPropsStyle>;
+export type AstNodeModelPropsStyleType = Instance<
+  typeof AstNodeModelPropsStyle
+>;
 export type AstNodeModelPropsStyleSnapshotInType = SnapshotIn<
   typeof AstNodeModelPropsStyle
 >;
@@ -46,7 +48,10 @@ export const AstNodeModel = t
       {}
     ),
     props: t.optional(AstNodeModelProps, {}),
-    children: t.optional(t.array(t.late((): IAnyModelType => AstNodeModel)), []),
+    children: t.optional(
+      t.array(t.late((): IAnyModelType => AstNodeModel)),
+      []
+    ),
     content: t.maybe(t.string),
   })
   .volatile<{
@@ -60,7 +65,12 @@ export const AstNodeModel = t
     },
   }))
   .actions((self) => ({
-    setEditingStyle(editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>) {
+    save() {
+      self.props.style = AstNodeModelPropsStyle.create(self.editingStyle);
+    },
+    setEditingStyle(
+      editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>
+    ) {
       self.editingStyle = editingStyle;
     },
     updateEditingStyle({
@@ -70,7 +80,10 @@ export const AstNodeModel = t
       styleKey: StyleEnum;
       styleValue: string;
     }) {
-      self.editingStyle[styleKey] = styleValue;
+      self.editingStyle = {
+        ...self.editingStyle,
+        [styleKey]: styleValue,
+      };
     },
   }));
 

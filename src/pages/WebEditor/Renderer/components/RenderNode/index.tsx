@@ -15,6 +15,7 @@ interface RenderNodeProps {
 
 const RenderNode: React.FC<RenderNodeProps> = observer(({ ast, ...p }) => {
   if (!ast) return null;
+  console.log('RenderNode', ast.uuid);
   const {
     handleOnClick,
     handleOnDragStart,
