@@ -4,6 +4,7 @@ import {
   Instance,
   SnapshotIn,
   SnapshotOut,
+  getSnapshot,
 } from "mobx-state-tree";
 import { AstNodeModel } from "./AstNodeModel";
 import type { AstNodeModelType } from "./AstNodeModel";
@@ -16,7 +17,16 @@ export const EditorModel = t
   })
   .actions((self) => ({
     setSelectedAstNode(node: AstNodeModelType) {
-      self.selectedAstNode = node;
+      if (!self.selectedAstNode) {
+        self.selectedAstNode = node;
+        node.setEditingStyle(node.props.style);
+      } else {
+        if (node.uuid !== self.selectedAstNode.uuid) {
+          self.selectedAstNode.setEditingStyle({});
+          self.selectedAstNode = node;
+          node.setEditingStyle(getSnapshot(node.props.style));
+        }
+      }
     },
   }));
 

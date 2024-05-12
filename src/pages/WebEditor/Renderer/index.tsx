@@ -9,24 +9,14 @@ import { getSnapshot } from "mobx-state-tree";
 const Renderer: React.FC = observer(() => {
   const { ast, editor } = useStores();
   const { setSelectedAstNode } = editor;
-  const selectedAstNode = editor.selectedAstNode as AstNodeModelType;
 
   const handleOnClick: (ev: React.MouseEvent, node: AstNodeModelType) => void =
     useCallback(
-      (e, selected) => {
+      (e, node) => {
         e.stopPropagation();
-        if (!selectedAstNode) {
-          setSelectedAstNode(selected);
-          selected.setEditingStyle(selected.props.style);
-        } else {
-          if (selected.uuid !== selectedAstNode.uuid) {
-            selectedAstNode.setEditingStyle({});
-            setSelectedAstNode(selected);
-            selected.setEditingStyle(getSnapshot(selected.props.style));
-          }
-        }
+        setSelectedAstNode(node);
       },
-      [selectedAstNode, setSelectedAstNode]
+      [setSelectedAstNode]
     );
 
   const handleOnDragStart: (
