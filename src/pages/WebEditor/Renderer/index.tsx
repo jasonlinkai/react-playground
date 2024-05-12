@@ -16,17 +16,13 @@ const Renderer: React.FC = observer(() => {
       (e, selected) => {
         e.stopPropagation();
         if (!selectedAstNode) {
-          console.log("he");
           setSelectedAstNode(selected);
           selected.setEditingStyle(selected.props.style);
         } else {
           if (selected.uuid !== selectedAstNode.uuid) {
-            console.log("in", "selected", selected.props.style);
             selectedAstNode.setEditingStyle({});
             setSelectedAstNode(selected);
             selected.setEditingStyle(getSnapshot(selected.props.style));
-          } else {
-            console.log("out");
           }
         }
       },
@@ -59,7 +55,6 @@ const Renderer: React.FC = observer(() => {
   const handleOnDrop: (ev: React.DragEvent, node: AstNodeModelType) => void =
     useCallback((ev, drop) => {
       const data = ev.dataTransfer.getData("application/json");
-      const drag = JSON.parse(data);
       console.log('drag', data);
       console.log('drop', JSON.stringify(getSnapshot(drop)));
     }, []);
