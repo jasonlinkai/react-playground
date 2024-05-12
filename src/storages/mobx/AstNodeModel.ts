@@ -4,6 +4,7 @@ import {
   Instance,
   SnapshotIn,
   SnapshotOut,
+  detach,
 } from "mobx-state-tree";
 import { Event, EventNames } from "../../utils/event";
 import { ElementType } from "../../pages/WebEditor/types";
@@ -55,8 +56,8 @@ export const AstNodeModel = t
     content: t.maybe(t.string),
   })
   .volatile<{
-    isSelected: boolean,
-    isDragOvered: boolean,
+    isSelected: boolean;
+    isDragOvered: boolean;
     editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>;
   }>(() => ({
     isSelected: false,
@@ -72,6 +73,9 @@ export const AstNodeModel = t
     },
   }))
   .actions((self) => ({
+    setParent(uuid: string) {
+      self.parent = uuid;
+    },
     setIsSelected(v: boolean) {
       self.isSelected = v;
     },
@@ -97,6 +101,16 @@ export const AstNodeModel = t
         ...self.editingStyle,
         [styleKey]: styleValue,
       };
+    },
+    addChild(child: any) {
+      child.setParent(self.uuid);
+      self.children.push(child);
+      return child;
+    },
+    removeChild(uuid: any) {
+      const childIndex = self.children.findIndex((child) => child.uuid === uuid);
+      const child = self.children[childIndex];
+      detach(child);
     },
   }));
 

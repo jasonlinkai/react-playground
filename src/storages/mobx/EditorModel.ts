@@ -1,6 +1,5 @@
 import {
   types as t,
-  IAnyModelType,
   Instance,
   SnapshotIn,
   SnapshotOut,
@@ -11,22 +10,28 @@ import type { AstNodeModelType } from "./AstNodeModel";
 
 export const EditorModel = t
   .model("EditorModel", {
-    selectedAstNode: t.maybe(
-      t.reference(t.late((): IAnyModelType => AstNodeModel))
-    ),
+    selectedAstNode: t.maybe(t.reference(AstNodeModel)),
+    dragingAstNode: t.maybe(t.reference(AstNodeModel)),
   })
   .actions((self) => ({
-    setSelectedAstNode(node: AstNodeModelType) {
-      if (!self.selectedAstNode) {
-        self.selectedAstNode = node;
-        node.setEditingStyle(node.props.style);
-      } else {
-        if (node.uuid !== self.selectedAstNode.uuid) {
-          self.selectedAstNode.setEditingStyle({});
+    setSelectedAstNode(node: AstNodeModelType | undefined) {
+      if (node) {
+        if (!self.selectedAstNode) {
           self.selectedAstNode = node;
-          node.setEditingStyle(getSnapshot(node.props.style));
+          node.setEditingStyle(node.props.style);
+        } else {
+          if (node.uuid !== self.selectedAstNode.uuid) {
+            self.selectedAstNode.setEditingStyle({});
+            self.selectedAstNode = node;
+            node.setEditingStyle(getSnapshot(node.props.style));
+          }
         }
+      } else {
+        self.selectedAstNode = node;
       }
+    },
+    setDragingAstNode(node: AstNodeModelType | undefined) {
+      self.dragingAstNode = node;
     },
   }));
 

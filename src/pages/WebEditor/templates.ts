@@ -22,6 +22,23 @@ export const template1 = {
   },
   children: [
     {
+      uuid: "adsf",
+      parent: "1",
+      type: ElementType.div,
+      props: {
+        key: "key_adsf",
+        className: "",
+        style: {
+          width: "300px",
+          height: "300px",
+          backgroundColor: "blue",
+        },
+      },
+      events: {
+      },
+      children: [],
+    },
+    {
       uuid: "2",
       parent: "1",
       type: ElementType.button,
@@ -42,8 +59,8 @@ export const template1 = {
         {
           uuid: "3",
           parent: "2",
-          type: ElementType['pure-text'],
-          content: 'Click Me',
+          type: ElementType["pure-text"],
+          content: "Click Me",
         },
         {
           uuid: "4",
