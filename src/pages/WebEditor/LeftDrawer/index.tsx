@@ -2,7 +2,7 @@ import "./index.css";
 import { useState } from "react";
 import StyleEditor from "./StyleEditor";
 
-const Drawer: React.FC = () => {
+const LeftDrawer: React.FC = () => {
   const [open, setOpen] = useState(true);
 
   const toggleDrawer = () => {
@@ -19,4 +19,4 @@ const Drawer: React.FC = () => {
   );
 };
 
-export default Drawer;
+export default LeftDrawer;
