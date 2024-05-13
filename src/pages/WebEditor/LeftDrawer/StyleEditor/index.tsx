@@ -168,7 +168,7 @@ const StyleEditor = observer(() => {
           })}
         </Fragment>
       )}
-      <button onClick={saveAst}>save</button>
+      <button disabled={!node.isChanged} onClick={saveAst}>save</button>
       <AstTagTreePanel root={node} />
     </div>
   );

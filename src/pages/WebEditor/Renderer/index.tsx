@@ -53,9 +53,7 @@ const Renderer: React.FC = observer(() => {
       (ev, node) => {
         ev.stopPropagation();
         if (dragingAstNode) {
-          const removeAstNodeUuid = dragingAstNode.uuid;
-          dragingAstNode.parent.removeChild(removeAstNodeUuid);
-          node.addChild(dragingAstNode);
+          dragingAstNode.parent.removeChild(dragingAstNode, node);
           setDragingAstNode(undefined);
         }
       },

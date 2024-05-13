@@ -130,12 +130,9 @@ export const AstNodeModel = t
       self.children.push(child);
       return child;
     },
-    removeChild(uuid: any) {
-      const childIndex = self.children.findIndex(
-        (child) => child.uuid === uuid
-      );
-      const child = self.children[childIndex];
+    removeChild(child: any, drop: any) {
       detach(child);
+      drop.addChild(child);
     },
   }));
 

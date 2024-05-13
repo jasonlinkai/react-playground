@@ -37,6 +37,10 @@ export const RootStore = t
     },
   }))
   .actions((self) => {
+    const setCanSaveSnapshot = (v: boolean) => {
+      self.canSaveSnapshot = v;
+    };
+
     const addAstSnapshot = (astSnapshot: AstNodeModelSnapshotOutType) => {
       self.astSnapshots = [...self.astSnapshots, astSnapshot];
       self.astSnapshotsIndex = self.astSnapshots.length - 1;
@@ -67,6 +71,7 @@ export const RootStore = t
     };
 
     return {
+      setCanSaveSnapshot,
       addAstSnapshot,
       undoAst,
       redoAst,
@@ -78,7 +83,7 @@ export const RootStore = t
       if (self.canSaveSnapshot) {
         self.addAstSnapshot(snapshot);
       } else {
-        self.canSaveSnapshot = true;
+        self.setCanSaveSnapshot(true);
       }
     });
 
