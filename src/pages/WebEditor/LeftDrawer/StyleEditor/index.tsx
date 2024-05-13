@@ -4,6 +4,7 @@ import { useStores } from "../../../../storages/mobx/useMobxStateTreeStores";
 import { AstNodeModelType } from "../../../../storages/mobx/AstNodeModel";
 import { StyleEnum } from "../../types";
 import AstTagTreePanel from "./components/AstTagTreePanel";
+import { Fragment } from "react/jsx-runtime";
 
 const styleKeys: StyleEnum[] = [...Object.values(StyleEnum)];
 
@@ -141,28 +142,31 @@ const StyleEditor = observer(() => {
     <div className="style-editor">
       <NormalText label={"uuid"} value={node.uuid} />
       <NormalText label={"parent"} value={node?.parent?.uuid || ""} />
-      {styleKeys.map((styleKey) => {
-        const { Component, props } = renderConfigs[styleKey];
-        return (
-          <Component
-            key={styleKey}
-            label={styleKey}
-            value={`${node.editingStyle[styleKey] || ""}`}
-            onChange={(v) => {
-              node.updateEditingStyle({ styleKey, styleValue: v });
-            }}
-            {...props}
-          />
-        );
-      })}
-      {node.isPureTextNode && (
+      {node.isPureTextNode ? (
         <NormalInput
           label="content"
-          value={node.editingContent || ''}
+          value={node.editingContent || ""}
           onChange={(v) => {
             node.setEditingContent(v);
           }}
         ></NormalInput>
+      ) : (
+        <Fragment>
+          {styleKeys.map((styleKey) => {
+            const { Component, props } = renderConfigs[styleKey];
+            return (
+              <Component
+                key={styleKey}
+                label={styleKey}
+                value={`${node.editingStyle[styleKey] || ""}`}
+                onChange={(v) => {
+                  node.updateEditingStyle({ styleKey, styleValue: v });
+                }}
+                {...props}
+              />
+            );
+          })}
+        </Fragment>
       )}
       <button onClick={saveAst}>save</button>
       <AstTagTreePanel root={node} />
