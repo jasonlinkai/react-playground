@@ -17,8 +17,12 @@ if (process.env.NODE_ENV === "development") {
   // connectReduxDevtools(require("remotedev"), store);
 }
 
+export const SNAPSHOT_KEYS = {
+  ROOT_STORE: "ROOT_STORE",
+};
+
 onSnapshot(store, (snapshot) => {
-  localStorage.setItem("RootStore", JSON.stringify(snapshot));
+  localStorage.setItem(SNAPSHOT_KEYS.ROOT_STORE, JSON.stringify(snapshot));
 });
 
 export const MobxStateTreeStoreProvider: React.FC<React.PropsWithChildren> = ({

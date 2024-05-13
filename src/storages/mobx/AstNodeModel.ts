@@ -53,18 +53,18 @@ export const AstNodeModel = t
       t.array(t.late((): IAnyModelType => AstNodeModel)),
       []
     ),
-    content: t.maybe(t.string),
+    content: t.optional(t.string, ''),
   })
   .volatile<{
     isSelected: boolean;
     isDragOvered: boolean;
     editingStyle: Partial<SnapshotOut<AstNodeModelPropsStyleType>>;
-    editingContent: string,
+    editingContent: string;
   }>(() => ({
     isSelected: false,
     isDragOvered: false,
     editingStyle: {},
-    editingContent: '',
+    editingContent: "",
   }))
   .views((self) => ({
     get isRootNode() {
@@ -72,6 +72,19 @@ export const AstNodeModel = t
     },
     get isPureTextNode() {
       return self.type === ElementType["pure-text"];
+    },
+    get isChanged() {
+      if (self.content !== self.editingContent) {
+        console.log('content...');
+        return true;
+      }
+      if (
+        JSON.stringify(self.props.style) !== JSON.stringify(self.editingStyle)
+      ) {
+        console.log('style...');
+        return true;
+      }
+      return false;
     },
   }))
   .actions((self) => ({
@@ -88,9 +101,11 @@ export const AstNodeModel = t
       self.isDragOvered = v;
     },
     save() {
-      self.props.style = AstNodeModelPropsStyle.create(self.editingStyle);
-      if (self.isPureTextNode) {
-        self.content = self.editingContent;
+      if (self.isChanged) {
+        self.props.style = AstNodeModelPropsStyle.create(self.editingStyle);
+        if (self.isPureTextNode) {
+          self.content = self.editingContent;
+        }
       }
     },
     setEditingStyle(
@@ -116,7 +131,9 @@ export const AstNodeModel = t
       return child;
     },
     removeChild(uuid: any) {
-      const childIndex = self.children.findIndex((child) => child.uuid === uuid);
+      const childIndex = self.children.findIndex(
+        (child) => child.uuid === uuid
+      );
       const child = self.children[childIndex];
       detach(child);
     },

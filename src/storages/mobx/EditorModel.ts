@@ -33,7 +33,15 @@ export const EditorModel = t
           }
         }
       } else {
-        self.selectedAstNode = node;
+        if (!self.selectedAstNode) {
+          self.selectedAstNode = undefined;
+        } else {
+          self.selectedAstNode.setEditingStyle({});
+          if (self.selectedAstNode.isPureTextNode) {
+            self.selectedAstNode.setEditingContent(self.selectedAstNode.content || '');
+          }
+          self.selectedAstNode = undefined;
+        }
       }
     },
     setDragingAstNode(node: AstNodeModelType | undefined) {
