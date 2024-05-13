@@ -13,7 +13,13 @@ export const EditorModel = t
     selectedAstNode: t.maybe(t.reference(AstNodeModel)),
     dragingAstNode: t.maybe(t.reference(AstNodeModel)),
   })
+  .volatile<{ isLeftDrawerOpen: boolean }>(() => ({
+    isLeftDrawerOpen: true,
+  }))
   .actions((self) => ({
+    setIsLeftDrawerOpen(open: boolean) {
+      self.isLeftDrawerOpen = open;
+    },
     setSelectedAstNode(node: AstNodeModelType | undefined) {
       if (node) {
         if (!self.selectedAstNode) {
@@ -38,7 +44,9 @@ export const EditorModel = t
         } else {
           self.selectedAstNode.setEditingStyle({});
           if (self.selectedAstNode.isPureTextNode) {
-            self.selectedAstNode.setEditingContent(self.selectedAstNode.content || '');
+            self.selectedAstNode.setEditingContent(
+              self.selectedAstNode.content || ""
+            );
           }
           self.selectedAstNode = undefined;
         }

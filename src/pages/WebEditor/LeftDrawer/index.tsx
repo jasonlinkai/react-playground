@@ -1,22 +1,16 @@
 import "./index.css";
-import { useState } from "react";
 import StyleEditor from "./StyleEditor";
+import { observer } from "mobx-react-lite";
+import { useStores } from "../../../storages/mobx/useMobxStateTreeStores";
 
-const LeftDrawer: React.FC = () => {
-  const [open, setOpen] = useState(true);
-
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
+const LeftDrawer: React.FC = observer(() => {
+  const { editor } = useStores();
 
   return (
-    <div className={`left-drawer ${open ? "open" : ""}`}>
+    <div className={`left-drawer ${editor.isLeftDrawerOpen ? "open" : ""}`}>
       <StyleEditor />
-      <button className="open-drawer-button" onClick={toggleDrawer}>
-        {open ? "Close Drawer" : "Open Drawer"}
-      </button>
     </div>
   );
-};
+});
 
 export default LeftDrawer;
