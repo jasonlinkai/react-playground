@@ -71,11 +71,15 @@ const AstTagTree = observer(
 );
 
 const AstTagTreePanel = observer(() => {
-  const { ast } = useStores();
+  const { editor } = useStores();
   return (
     <div className="ast-tree-panel">
       <div className="ast-tree-panel__title">AstTagTreePanel</div>
-      <AstTagTree node={ast} />
+      {
+        editor.selectedAstNode && (
+          <AstTagTree node={editor.selectedAstNode} />
+        )
+      }
     </div>
   );
 });
