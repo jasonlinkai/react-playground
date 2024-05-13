@@ -2,6 +2,7 @@ import "./index.css";
 import ActionBar from "./ActionBar";
 import LeftDrawer from "./LeftDrawer";
 import Renderer from "./Renderer";
+import RightDrawer from "./RightDrawer";
 import { MobxStateTreeStoreProvider } from "../../storages/mobx/MobxStateTreeProvider";
 
 const WebEditor: React.FC = () => {
@@ -12,6 +13,7 @@ const WebEditor: React.FC = () => {
         <div style={{ display: "flex" }}>
           <LeftDrawer />
           <Renderer />
+          <RightDrawer />
         </div>
       </div>
     </MobxStateTreeStoreProvider>

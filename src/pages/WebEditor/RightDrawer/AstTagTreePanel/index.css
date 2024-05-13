@@ -1,0 +1,43 @@
+
+.ast-tree-panel {
+}
+
+.ast-tree-panel > .ast-tree-panel__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  color: white;
+}
+.ast-tree-panel .ast-tree-panel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.ast-tree-panel .ast-tree-panel-item {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__start-tag {
+  color: #0022ff;
+}
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__start-tag.ast-tree-panel-item__start-tag--selected {
+  color: #00ffff;
+}
+
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__content {
+  color: #0022ff;
+}
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__content.ast-tree-panel-item__content--selected {
+  color: #00ffff;
+}
+
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__end-tag {
+  color: #0022ff;
+}
+.ast-tree-panel .ast-tree-panel-item > .ast-tree-panel-item__end-tag.ast-tree-panel-item__end-tag--selected {
+  color: #00ffff;
+}

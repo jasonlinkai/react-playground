@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { useStores } from "../../../../storages/mobx/useMobxStateTreeStores";
 import { AstNodeModelType } from "../../../../storages/mobx/AstNodeModel";
 import { StyleEnum } from "../../types";
-import AstTagTreePanel from "./components/AstTagTreePanel";
 import { Fragment } from "react/jsx-runtime";
 
 const styleKeys: StyleEnum[] = [...Object.values(StyleEnum)];
@@ -169,7 +168,6 @@ const StyleEditor = observer(() => {
         </Fragment>
       )}
       <button disabled={!node.isChanged} onClick={saveAst}>save</button>
-      <AstTagTreePanel root={node} />
     </div>
   );
 });

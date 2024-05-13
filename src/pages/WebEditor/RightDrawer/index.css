@@ -1,17 +1,17 @@
-.left-drawer {
+.right-drawer {
   width: 0px;
   background-color: #030303;
 }
 
-.left-drawer.open {
+.right-drawer.open {
   width: 500px;
   max-width: 500px;
 }
 
-.left-drawer .open-drawer-button {
+.right-drawer .open-drawer-button {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 20px;
   background-color: transparent;
   border: none;
   color: white;

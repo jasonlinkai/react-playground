@@ -13,12 +13,16 @@ export const EditorModel = t
     selectedAstNode: t.maybe(t.reference(AstNodeModel)),
     dragingAstNode: t.maybe(t.reference(AstNodeModel)),
   })
-  .volatile<{ isLeftDrawerOpen: boolean }>(() => ({
+  .volatile<{ isLeftDrawerOpen: boolean; isRightDrawerOpen: boolean }>(() => ({
     isLeftDrawerOpen: true,
+    isRightDrawerOpen: true,
   }))
   .actions((self) => ({
     setIsLeftDrawerOpen(open: boolean) {
       self.isLeftDrawerOpen = open;
+    },
+    setIsRightDrawerOpen(open: boolean) {
+      self.isRightDrawerOpen = open;
     },
     setSelectedAstNode(node: AstNodeModelType | undefined) {
       if (node) {
