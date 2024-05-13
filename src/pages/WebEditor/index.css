@@ -1,5 +1,12 @@
 #web-editor {
   position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#web-editor .web-editor__main-area {
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  height: calc(100% - 50px);
 }

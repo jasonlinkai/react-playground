@@ -6,6 +6,7 @@
 .left-drawer.open {
   width: 500px;
   max-width: 500px;
+  height: 100%;
 }
 
 .left-drawer .open-drawer-button {

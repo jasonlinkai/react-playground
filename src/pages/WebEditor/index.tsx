@@ -10,7 +10,7 @@ const WebEditor: React.FC = () => {
     <MobxStateTreeStoreProvider>
       <div id="web-editor">
         <ActionBar />
-        <div style={{ display: "flex" }}>
+        <div className="web-editor__main-area">
           <LeftDrawer />
           <Renderer />
           <RightDrawer />

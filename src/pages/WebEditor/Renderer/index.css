@@ -1,11 +1,5 @@
 #ast-renderer {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   overflow: scroll;
-}
-
-@keyframes linearGradientMove {
-  100% {
-    background-position: 4px 0, -4px 100%, 0 -4px, 100% 4px;
-  }
 }
