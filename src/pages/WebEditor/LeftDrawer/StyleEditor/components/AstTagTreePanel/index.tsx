@@ -25,7 +25,7 @@ const AstTagTree = observer(
           <>
             <span className="ast-tree-panel-item__start-tag">{`<${node.type}>`}</span>
             {node.children.map((child) => {
-              return <AstTagTree node={child} level={level + 1} />;
+              return <AstTagTree key={`ast-tree-panel-item-child-${child.uuid}`} node={child} level={level + 1} />;
             })}
             <span className="ast-tree-panel-item__end-tag">{`</${node.type}>`}</span>
           </>
